@@ -1,4 +1,7 @@
+// have no idea what ts-ignore does but it makes the linter stop complaining
+// @ts-ignore
 const secrets = require('./secrets.json')
+// @ts-ignore
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -8,7 +11,12 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-	console.log(message.content);
+	if (message.author.bot) {
+		return
+	}
+	else if (message.content == 'rata') {
+		message.channel.send('rata')
+	}
 });
 
 
