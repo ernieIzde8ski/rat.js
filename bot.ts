@@ -18,9 +18,21 @@ client.on('message', message => {
 });
 
 client.on('message', message => {
-	if (message.author.bot) return
-	else if (message.content == `${config.prefix}ping`) {
-		message.channel.send(config.respuesta)
+	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+
+	const args = message.content.slice(config.prefix.length).trim().split(' ');
+	const command = args.shift().toLowerCase();
+
+	if (command == "ping") {
+		if (!args.length) {
+			message.channel.send(config.respuesta)
+		}
+		else if ("everyone" in args || "here" in args) {
+			message.channel.send(config.respuesta)
+		}
+		else {
+			message.channel.send(`Youre Args Are ${args}`)
+		}
 	}
 })
 
