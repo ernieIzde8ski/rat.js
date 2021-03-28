@@ -1,7 +1,6 @@
-// have no idea what ts-ignore does but it makes the linter stop complaining
-// @ts-ignore
 const secrets = require('./secrets.json')
-// @ts-ignore
+const config = require('./config.json')
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
@@ -11,11 +10,10 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-	if (message.author.bot) {
-		return
-	}
-	else if (message.content == 'rata') {
-		message.channel.send('rata')
+	if (message.author.bot) return
+	else if (message.content == config.trigger_word) {
+		message.channel.send(config.trigger_word)
+		console.log(`${config.trigger_word} from ${message.author.username}#${message.author.discriminator}`)
 	}
 });
 
