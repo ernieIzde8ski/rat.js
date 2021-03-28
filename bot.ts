@@ -7,7 +7,7 @@ const client = new Discord.Client();
 
 
 client.once('ready', () => {
-	console.log('Ready!');
+	console.log(`${client.user.username}#${client.user.discriminator} Online!`);
 });
 
 client.on('message', message => {
