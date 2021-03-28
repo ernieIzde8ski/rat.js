@@ -17,5 +17,11 @@ client.on('message', message => {
 	}
 });
 
+client.on('message', message => {
+	if (message.author.bot) return
+	else if (message.content == `${config.prefix}ping`) {
+		message.channel.send(config.respuesta)
+	}
+})
 
 client.login(secrets.token);
