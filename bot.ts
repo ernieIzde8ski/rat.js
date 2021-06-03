@@ -79,7 +79,7 @@ client.on('message', message => {
 			return;
 		}
 	});
-
+	message.channel.send("That is not a command !!!!!!")
 
 })
 
