@@ -15,16 +15,17 @@ var cmds = [
 				cmds.forEach(cmd => {
 					spaces = " ".repeat(spaces_maximum - cmd.name[0].length);
 					resp += `\n${cmd.name[0]}:${spaces}${cmd.desc}`
-					resp += `\n\nType ${config.prefix}help for this message.`;
-					resp += `\nYou can also type ${config.prefix}help <command> for more information on a command.`;});
-				}
+				});
+				resp += `\n\nType ${config.prefix}help for this message.`;
+				resp += `\nYou can also type ${config.prefix}help <command> for more information on a command.`;
+			}
 			else {
 				cmds.forEach(cmd => {
 					if (cmd.name.includes(args[0])) {
 						resp += `\n${config.prefix}[${cmd.name}]\n`;
 						resp += `\n${cmd.desc}\n${cmd.desc_ext}`;
-				}
-					
+					}
+
 				})
 				if (resp == "```") {
 					msg.channel.send("That is not a command !!!!!!");
@@ -34,6 +35,12 @@ var cmds = [
 			resp += "\n```";
 			msg.channel.send(resp)
 		}
+	},
+	{
+		"name": ["ping", "p"],
+		"desc": "Respond",
+		"desc_ext": "no, really",
+		"func": (args, msg) => msg.channel.send("No Lol")
 	}
 ]
 
