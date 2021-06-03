@@ -6,21 +6,47 @@ const client = new Discord.Client();
 
 var cmds = [
 	{
-		"name": ["ping", "p"],
-		"desc": ["Responds"],
-		"func": (args, msg) => msg.channel.send("This is a response")
-	},
-	{
 		"name": ["help", "h"],
-		"desc": "Lists commands",
+		"desc": "Provide command information",
+		"desc_ext": "Accepts a command as a parameter",
 		"func": (args, msg) => {
 			var resp = "```";
-			cmds.forEach(cmd => resp += `\n${cmd.name[0]}: ${cmd.desc}`);
-			resp += "\n```"
+			if (!args.length) {
+				cmds.forEach(cmd => {
+					spaces = " ".repeat(spaces_maximum - cmd.name[0].length);
+					resp += `\n${cmd.name[0]}:${spaces}${cmd.desc}`
+					resp += `\n\nType ${config.prefix}help for this message.`;
+					resp += `\nYou can also type ${config.prefix}help <command> for more information on a command.`;});
+				}
+			else {
+				cmds.forEach(cmd => {
+					if (cmd.name.includes(args[0])) {
+						resp += `\n${config.prefix}[${cmd.name}]\n`;
+						resp += `\n${cmd.desc}\n${cmd.desc_ext}`;
+				}
+					
+				})
+				if (resp == "```") {
+					msg.channel.send("That is not a command !!!!!!");
+					return;
+				};
+			}
+			resp += "\n```";
 			msg.channel.send(resp)
 		}
 	}
 ]
+
+// These spaces get used in the help command
+var cmd;
+var spaces_maximum = 0;
+cmds.forEach(cmd => {
+	if (cmd.name[0].length > spaces_maximum)
+		spaces_maximum = cmd.name[0].length;
+});
+spaces_maximum += 3
+var spaces = "";
+
 
 client.once('ready', () => {
 	console.log(`${client.user.username}#${client.user.discriminator} Online!`);
@@ -40,7 +66,6 @@ client.on('message', message => {
 	const args = message.content.slice(config.prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
-	
 	cmds.forEach(cmd => {
 		if (cmd.name.includes(command)) {
 			cmd.func(args, message);
