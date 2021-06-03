@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-modules.exports = async (reference = "John 3:16") => {
+get_verse = async (reference = "John 3:16") => {
     var url = "https://bible-api.com/";
     const response = await fetch(`${url}${reference}`);
     const data = await response.json();
@@ -12,6 +12,8 @@ modules.exports = async (reference = "John 3:16") => {
     else return {
         "url": `https://www.biblegateway.com/passage/?search=${data.reference}`,
         "ref": data.reference,
-        "text": data.text.replace()
+        "text": data.text
     }
 }
+
+module.exports = {get_verse: get_verse}

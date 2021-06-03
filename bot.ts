@@ -4,6 +4,9 @@ const config = require('./config.json')
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
+const bible = require('./modules/bible');
+
+
 var cmds = [
 	{
 		"name": ["help", "h"],
@@ -35,12 +38,26 @@ var cmds = [
 			resp += "\n```";
 			msg.channel.send(resp)
 		}
-	},
-	{
+	}, {
 		"name": ["ping", "p"],
 		"desc": "Respond",
 		"desc_ext": "no, really",
 		"func": (args, msg) => msg.channel.send("No Lol")
+	}, {
+		"name": ["bible_verse", "verse", "v", "🙏"],
+		"desc": "Returns a bible verse",
+		"desc_ext": "usual format is <Book> <Chapter>:<Verse>",
+		"func": (args, msg) => {
+			if (!args.length) {
+				msg.channel.send("Please provide Input");
+				return;
+			}
+			bible.get_verse(args.join(" ")).then(text => {
+				var message = `**${text.ref}**\n`
+				message += `>>> ${text.text}`
+				msg.channel.send(message);
+			});
+		}
 	}
 ]
 
@@ -73,13 +90,14 @@ client.on('message', message => {
 	const args = message.content.slice(config.prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
+	var command_parsed = false
 	cmds.forEach(cmd => {
 		if (cmd.name.includes(command)) {
 			cmd.func(args, message);
-			return;
+			return command_parsed = true;
 		}
 	});
-	message.channel.send("That is not a command !!!!!!")
+	if (!command_parsed) message.channel.send("That is not a command !!!!!!");
 
 })
 
