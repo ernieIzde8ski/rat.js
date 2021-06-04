@@ -27,6 +27,7 @@ var cmds = [
 					if (cmd.name.includes(args[0])) {
 						resp += `\n${config.prefix}[${cmd.name}]\n`;
 						resp += `\n${cmd.desc}\n${cmd.desc_ext}`;
+						return;
 					}
 
 				})
@@ -48,13 +49,15 @@ var cmds = [
 		"desc": "Returns a bible verse",
 		"desc_ext": "usual format is <Book> <Chapter>:<Verse>",
 		"func": (args, msg) => {
-			if (!args.length) {
+			var arg = args.join(" ")
+			if (!arg.length) {
 				msg.channel.send("Please provide Input");
 				return;
 			}
 			bible.get_verse(args.join(" ")).then(text => {
-				var message = `**${text.ref}**\n`
-				message += `>>> ${text.text}`
+				if (text.text.length > 1000) { msg.channel.send(`Too long\nthis link might work: ${text.url}`); return; };
+				var message = `**${text.ref}**\n`;
+				message += `>>> ${text.text}`;
 				msg.channel.send(message);
 			});
 		}

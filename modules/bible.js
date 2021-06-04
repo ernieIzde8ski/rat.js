@@ -10,7 +10,7 @@ get_verse = async (reference = "John 3:16") => {
         "text": "Try Again Lol"
     };
     else return {
-        "url": `https://www.biblegateway.com/passage/?search=${data.reference}`,
+        "url": `https://www.biblegateway.com/passage/?search=${data.reference.replace(/ /g, "%20")}`,
         "ref": data.reference,
         "text": data.text
     }
