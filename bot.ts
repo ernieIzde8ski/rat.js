@@ -6,6 +6,8 @@ const client = new Discord.Client();
 
 const bible = require('./modules/bible');
 const help = require("./modules/help")
+const bm = require("./modules/bm")
+
 
 var cmds = [
 	{
@@ -28,7 +30,7 @@ var cmds = [
 		"func": (args, msg) => msg.channel.send("No Lol")
 	}, {
 		"name": ["bible_verse", "verse", "v", "🙏"],
-		"desc": "Returns a bible verse",
+		"desc": "Return a bible verse",
 		"desc_ext": "usual format is <Book> <Chapter>:<Verse>",
 		"func": (args, msg) => {
 			var arg = args.join(" ")
@@ -42,6 +44,15 @@ var cmds = [
 				message += `>>> ${text.text}`;
 				msg.channel.send(message);
 			});
+		}
+	}, {
+		"name": ["based_cringe_meter", "bm"],
+		"desc": "Return judgement",
+		"desc_ext": "Requires an argument",
+		"func": (args, msg) => {
+			if (!args.length) {msg.channel.send("**You** are **cringe!!!!!!!!!!**"); return;};
+			var resp = bm(args.join(" "));
+			msg.channel.send(`**${resp.seed}** are **${resp.value}**${resp.punc}`)
 		}
 	}
 ]

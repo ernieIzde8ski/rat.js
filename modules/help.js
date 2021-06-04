@@ -15,13 +15,14 @@ default_help = (cmds, max_spaces, prefix) => {
 
 command_help = (cmds, arg, prefix) => {
     var resp = "";
-    cmds.filter(cmd => cmd.name.includes(arg)).forEach(cmd => {
-        resp += `\n${prefix}[${cmd.name}]\n`;
-        resp += `\n${cmd.desc}`;
-        if (cmd.desc_ext) resp += `\n${cmd.desc_ext}`;
-        return;
-    })
-    if (!resp) return "That is not a valid command !!!!!!!";
+    cmd = cmds.filter(cmd => cmd.name.includes(arg))
+    if (!cmd.length) return "That is not a valid command !!!!!!!";
+
+    cmd = cmd[0]
+    resp += `\n${prefix}[${cmd.name}]\n`;
+    resp += `\n${cmd.desc}`;
+    if (cmd.desc_ext) resp += `\n${cmd.desc_ext}`;
+    
     return wrap(resp);
 }
 
