@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const bible = require('./modules/bible');
-
+const help = require("./modules/help")
 
 var cmds = [
 	{
@@ -13,30 +13,12 @@ var cmds = [
 		"desc": "Provide command information",
 		"desc_ext": "Accepts a command as a parameter",
 		"func": (args, msg) => {
-			var resp = "```";
 			if (!args.length) {
-				cmds.forEach(cmd => {
-					spaces = " ".repeat(spaces_maximum - cmd.name[0].length);
-					resp += `\n${cmd.name[0]}:${spaces}${cmd.desc}`
-				});
-				resp += `\n\nType ${config.prefix}help for this message.`;
-				resp += `\nYou can also type ${config.prefix}help <command> for more information on a command.`;
+				var resp = help.default_help(cmds, spaces_maximum, config.prefix);
 			}
 			else {
-				cmds.forEach(cmd => {
-					if (cmd.name.includes(args[0])) {
-						resp += `\n${config.prefix}[${cmd.name}]\n`;
-						resp += `\n${cmd.desc}\n${cmd.desc_ext}`;
-						return;
-					}
-
-				})
-				if (resp == "```") {
-					msg.channel.send("That is not a command !!!!!!");
-					return;
-				};
+				var resp = help.command_help(cmds, args[0], config.prefix)
 			}
-			resp += "\n```";
 			msg.channel.send(resp)
 		}
 	}, {
