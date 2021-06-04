@@ -4,7 +4,7 @@ wrap = resp => "```resp```".replace("resp", resp);
 
 default_help = (cmds, max_spaces, prefix) => {
     var resp = "";
-    cmds.forEach(cmd => {
+    cmds.filter(cmd => !cmd.hidden).forEach(cmd => {
         spaces = " ".repeat(max_spaces - cmd.name[0].length);
         resp += `\n${cmd.name[0]}:${spaces}${cmd.desc}`
     });

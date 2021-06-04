@@ -15,8 +15,7 @@ var cmds = [
 		"func": (args, msg) => {
 			if (!args.length) {
 				var resp = help.default_help(cmds, spaces_maximum, config.prefix);
-			}
-			else {
+			} else {
 				var resp = help.command_help(cmds, args[0], config.prefix)
 			}
 			msg.channel.send(resp)
@@ -25,6 +24,7 @@ var cmds = [
 		"name": ["ping", "p"],
 		"desc": "Respond",
 		"desc_ext": "no, really",
+		"hidden": true,
 		"func": (args, msg) => msg.channel.send("No Lol")
 	}, {
 		"name": ["bible_verse", "verse", "v", "🙏"],
