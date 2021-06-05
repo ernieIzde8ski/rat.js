@@ -2,8 +2,9 @@ var spaces = "";
 
 wrap = resp => "```resp```".replace("resp", resp);
 
-default_help = (cmds, max_spaces, prefix) => {
+default_help = (cmds, prefix) => {
     var resp = "";
+    var max_spaces = get_spaces(cmds)
     cmds.filter(cmd => !cmd.hidden).forEach(cmd => {
         spaces = " ".repeat(max_spaces - cmd.name[0].length);
         resp += `\n${cmd.name[0]}:${spaces}${cmd.desc}`
@@ -13,9 +14,8 @@ default_help = (cmds, max_spaces, prefix) => {
     return wrap(resp);
 }
 
-command_help = (cmds, args, prefix) => {
+command_help = (cmds, prefix, args) => {
     var resp = "";
-    var cmd = {};
 
     c = get_command(cmds, args)
     if (c.error) return `error: ${c.error}`
@@ -23,6 +23,15 @@ command_help = (cmds, args, prefix) => {
     resp += `\n${prefix}${c.path}[${c.name}]\n`;
     resp += `\n${c.desc}`;
     if (c.desc_ext) resp += `\n${c.desc_ext}`;
+    if (c.cmds) {
+        var max_spaces = get_spaces(c.cmds)
+        resp += "\n\nCommands:"
+        var spaces = "";
+        c.cmds.filter(cmd => !cmd.hidden).forEach(cmd => {
+            spaces = " ".repeat(max_spaces - cmd.name[0].length)
+            resp += `\n  ${cmd.name[0]}:${spaces}${cmd.desc}`
+        })
+    };
 
     return wrap(resp);
 }
@@ -30,7 +39,6 @@ command_help = (cmds, args, prefix) => {
 get_command = (cmds, args, path = "") => {
     arg = args.shift().toLowerCase()
     cmds = cmds.filter(cmd => cmd.name.includes(arg))
-    console.log(cmds)
 
     // if no commands present
     if (!cmds.length) return {
@@ -55,6 +63,15 @@ get_command = (cmds, args, path = "") => {
         // if more subcommands to evaluate
         return get_command(cmd.cmds, args, path)
     }
+}
+
+get_spaces = cmds => {
+    var max_spaces = 0;
+    cmds.forEach(cmd => {
+        len = cmd.name[0].length
+        if (len > max_spaces) max_spaces = len; 
+    })
+    return max_spaces + 2
 }
 
 module.exports = {

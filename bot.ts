@@ -21,9 +21,9 @@ var cmds = [
 		"desc_ext": "Accepts a command as a parameter",
 		"func": (args, msg) => {
 			if (!args.length) {
-				var resp = help.default_help(cmds, spaces_maximum, config.prefix);
+				var resp = help.default_help(cmds, config.prefix);
 			} else {
-				var resp = help.command_help(cmds, args, config.prefix)
+				var resp = help.command_help(cmds, config.prefix, args)
 			}
 			msg.channel.send(resp)
 		}
@@ -62,6 +62,11 @@ var cmds = [
 						}
 					}
 				]
+			},
+			{
+				"name": ["testing", "test", "t"],
+				"desc": "Testing command",
+				"func": (args, msg) => msg.channel.send("What")
 			}
 		]
 	}, {
@@ -96,15 +101,6 @@ var cmds = [
 		"func": (args, msg) => msg.channel.send(`https://xkcd.com/${args[0]}`)
 	}
 ]
-
-// These spaces get used in the help command
-var spaces_maximum = 0;
-cmds.forEach(cmd => {
-	if (cmd.name[0].length > spaces_maximum)
-		spaces_maximum = cmd.name[0].length;
-});
-spaces_maximum += 3
-var spaces = "";
 
 
 client.once('ready', () => {
