@@ -13,17 +13,48 @@ default_help = (cmds, max_spaces, prefix) => {
     return wrap(resp);
 }
 
-command_help = (cmds, arg, prefix) => {
+command_help = (cmds, args, prefix) => {
     var resp = "";
-    cmd = cmds.filter(cmd => cmd.name.includes(arg))
-    if (!cmd.length) return "That is not a valid command !!!!!!!";
+    var cmd = {};
 
-    cmd = cmd[0]
-    resp += `\n${prefix}[${cmd.name}]\n`;
-    resp += `\n${cmd.desc}`;
-    if (cmd.desc_ext) resp += `\n${cmd.desc_ext}`;
-    
+    c = get_command(cmds, args)
+    if (c.error) return `error: ${c.error}`
+
+    resp += `\n${prefix}${c.path}[${c.name}]\n`;
+    resp += `\n${c.desc}`;
+    if (c.desc_ext) resp += `\n${c.desc_ext}`;
+
     return wrap(resp);
+}
+
+get_command = (cmds, args, path = "") => {
+    arg = args.shift().toLowerCase()
+    cmds = cmds.filter(cmd => cmd.name.includes(arg))
+    console.log(cmds)
+
+    // if no commands present
+    if (!cmds.length) return {
+        "error": "could not find that command",
+    };
+    // if too many commands present
+    else if (cmds.length > 1) return {
+        "error": `internal error; multiple commands named ${arg}`
+    };
+
+    cmd = cmds[0]
+    cmd.path = path
+    // if no more arguments to evaluate
+    if (!args.length) return cmd;
+    // if more arguments to evaluate
+    else {
+        path += cmd.name[0] + " ";
+        // if no more subcommands to evaluate
+        if (!cmd.cmds) return {
+            "error": `${cmd.name[0]} has no subcommands`
+        };
+        // if more subcommands to evaluate
+        return get_command(cmd.cmds, args, path)
+    }
 }
 
 module.exports = {

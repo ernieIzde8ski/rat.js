@@ -16,14 +16,14 @@ const bm = require("./modules/bm")
 
 var cmds = [
 	{
-		"name": ["help", "h"],
+		"name": ["help", "h", "command", "cmd", "commands", "cmds"],
 		"desc": "Provide command information",
 		"desc_ext": "Accepts a command as a parameter",
 		"func": (args, msg) => {
 			if (!args.length) {
 				var resp = help.default_help(cmds, spaces_maximum, config.prefix);
 			} else {
-				var resp = help.command_help(cmds, args[0], config.prefix)
+				var resp = help.command_help(cmds, args, config.prefix)
 			}
 			msg.channel.send(resp)
 		}
@@ -41,7 +41,8 @@ var cmds = [
 		},
 		// optional: whether hidden or not in help command
 		"hidden": true,
-		// optional: check
+		// optional: checks; evaluated before executing a command
+		// are not parsed on subcommands
 		"checks": [checks.return_false, checks.is_owner],
 		// subcommands
 		// they use the same format as other commands
@@ -97,7 +98,6 @@ var cmds = [
 ]
 
 // These spaces get used in the help command
-var cmd;
 var spaces_maximum = 0;
 cmds.forEach(cmd => {
 	if (cmd.name[0].length > spaces_maximum)
