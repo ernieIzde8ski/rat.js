@@ -7,7 +7,7 @@ const removePrefix = (prefix = "", string = "") => {
 // execute a command & return True
 const execute = (app, cmd, args, msg) => {
     if (cmd.checks) {
-        var failed_checks = cmd.checks.filter(check => !check(app, msg))
+        var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
         failed_checks = failed_checks.map(check => "`" + removePrefix("checks.", check.name) + "`")
         if (failed_checks.length) {
             msg.channel.send(`error: failed the following check(s): ${String(failed_checks).replace(",", ", ")}`)

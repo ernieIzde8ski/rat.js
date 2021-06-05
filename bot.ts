@@ -2,7 +2,7 @@ const secrets = require('./secrets.json')
 const config = require('./config.json')
 
 const Discord = require('discord.js');
-const client = new Discord.Client({"disableMentions": "everyone"});
+const client = new Discord.Client({ "disableMentions": "everyone" });
 
 // basics
 const checks = require("./modules/checks")
@@ -12,7 +12,7 @@ const parse = require("./modules/command_parsing")
 const help = require("./modules/help")
 const bible = require('./modules/bible');
 const bm = require("./modules/bm")
-
+const xkcd = require("./modules/xkcd")
 
 var cmds = [
 	{
@@ -56,7 +56,7 @@ var cmds = [
 						"name": ["owner-only"],
 						"desc": "Return arguments",
 						"func": (args, msg) => {
-							if (!checks.is_owner(app, msg)) {msg.channel.send("You are not the owner !!!!!"); return;};
+							if (!checks.is_owner(app, msg)) { msg.channel.send("You are not the owner !!!!!"); return; };
 							if (!args.length) msg.channel.send("you have no args");
 							else msg.channel.send(`your arg(s) are: ${args}`);
 						}
@@ -98,7 +98,21 @@ var cmds = [
 	}, {
 		"name": ["xkcd", "x"],
 		"desc": "Return an xkcd from an integer",
-		"func": (args, msg) => msg.channel.send(`https://xkcd.com/${args[0]}`)
+		"func": (args, msg) => msg.channel.send(`https://xkcd.com/${args[0]}`),
+		"checks": [xkcd.isRealXKCD],
+		"cmds": [
+			{
+				"name": ["random", "r"],
+				"desc": "Returns a random xkcd",
+				"func": (args, msg) => msg.channel.send(xkcd.random())
+			},
+			{
+				"name": ["latest", "l"],
+				"desc": "Returns the latest xkcd",
+				"func": (args, msg) => msg.channel.send(xkcd.l)
+			}
+		]
+
 	}
 ]
 
@@ -121,8 +135,8 @@ client.on('message', message => {
 	const args = message.content.slice(config.prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
-	var command_parsed = parse(app, cmds, command, args, message);
-	if (!command_parsed) message.channel.send("That is not a command !!!!!!");
+	var parsed = parse(app, cmds, command, args, message)
+	if (!parsed) message.channel.send("That is not a command!!!!!");
 
 })
 
