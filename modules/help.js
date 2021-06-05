@@ -23,15 +23,21 @@ command_help = (cmds, prefix, args) => {
     resp += `\n${prefix}${c.path}[${c.name}]\n`;
     resp += `\n${c.desc}`;
     if (c.desc_ext) resp += `\n${c.desc_ext}`;
+
     if (c.cmds) {
         var max_spaces = get_spaces(c.cmds)
-        resp += "\n\nCommands:"
+        resp += "\n\nSubcommands:"
         var spaces = "";
         c.cmds.filter(cmd => !cmd.hidden).forEach(cmd => {
             spaces = " ".repeat(max_spaces - cmd.name[0].length)
             resp += `\n  ${cmd.name[0]}:${spaces}${cmd.desc}`
         })
     };
+
+    if (c.checks) {
+        resp += "\n\nChecks: "
+        resp += String(c.checks.map(check => check.name)).replace(",", ", ")
+    }
 
     return wrap(resp);
 }
@@ -69,7 +75,7 @@ get_spaces = cmds => {
     var max_spaces = 0;
     cmds.forEach(cmd => {
         len = cmd.name[0].length
-        if (len > max_spaces) max_spaces = len; 
+        if (len > max_spaces) max_spaces = len;
     })
     return max_spaces + 2
 }
