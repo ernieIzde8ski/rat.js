@@ -2,10 +2,15 @@ const secrets = require('./secrets.json')
 const config = require('./config.json')
 
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({"disableMentions": "everyone"});
 
-const bible = require('./modules/bible');
+// basics
+const checks = require("./modules/checks")
+const parse = require("./modules/command_parsing")
+
+// command modules
 const help = require("./modules/help")
+const bible = require('./modules/bible');
 const bm = require("./modules/bm")
 
 
@@ -23,11 +28,41 @@ var cmds = [
 			msg.channel.send(resp)
 		}
 	}, {
+		// This command serves mainly as an example so I remember how to write commands
+		// aliases; the first is used as the primary name -> required
 		"name": ["ping", "p"],
+		// description is used in help command; required
 		"desc": "Respond",
+		// optional: provide additional information in help command
 		"desc_ext": "no, really",
+		// main function; required
+		"func": (args, msg) => {
+			msg.channel.send(`No Lol`)
+		},
+		// optional: whether hidden or not in help command
 		"hidden": true,
-		"func": (args, msg) => msg.channel.send("No Lol")
+		// optional: check
+		"checks": [checks.return_false, checks.is_owner],
+		// subcommands
+		// they use the same format as other commands
+		"cmds": [
+			{
+				"name": ["bear"],
+				"desc": "CRINGE BEAR",
+				"func": (args, msg) => msg.channel.send("CRINGE BEAR"),
+				"cmds": [
+					{
+						"name": ["owner-only"],
+						"desc": "Return arguments",
+						"func": (args, msg) => {
+							if (!checks.is_owner(app, msg)) {msg.channel.send("You are not the owner !!!!!"); return;};
+							if (!args.length) msg.channel.send("you have no args");
+							else msg.channel.send(`your arg(s) are: ${args}`);
+						}
+					}
+				]
+			}
+		]
 	}, {
 		"name": ["bible_verse", "verse", "v", "🙏"],
 		"desc": "Return a bible verse",
@@ -50,10 +85,14 @@ var cmds = [
 		"desc": "Return judgement",
 		"desc_ext": "Requires an argument",
 		"func": (args, msg) => {
-			if (!args.length) {msg.channel.send("**You** are **cringe!!!!!!!!!!**"); return;};
+			if (!args.length) { msg.channel.send("**You** are **cringe!!!!!!!!!!**"); return; };
 			var resp = bm(args.join(" "));
 			msg.channel.send(`**${resp.seed}** are **${resp.value}**${resp.punc}`)
 		}
+	}, {
+		"name": ["xkcd", "x"],
+		"desc": "Return an xkcd from an integer",
+		"func": (args, msg) => msg.channel.send(`https://xkcd.com/${args[0]}`)
 	}
 ]
 
@@ -86,15 +125,12 @@ client.on('message', message => {
 	const args = message.content.slice(config.prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
-	var command_parsed = false
-	cmds.forEach(cmd => {
-		if (cmd.name.includes(command)) {
-			cmd.func(args, message);
-			return command_parsed = true;
-		}
-	});
+	var command_parsed = parse(app, cmds, command, args, message);
 	if (!command_parsed) message.channel.send("That is not a command !!!!!!");
 
 })
 
-client.login(secrets.token);
+var app;
+client.login(secrets.token)
+	.then(x => client.fetchApplication()
+		.then(application => app = application));
