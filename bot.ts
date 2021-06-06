@@ -38,4 +38,8 @@ var app;
 var cmds = [];
 client.login(secrets.token)
 	.then(x => client.fetchApplication()
-		.then(application => cmds = cmds_(application, config)))
+		.then(application => { 
+			cmds = cmds_(application, config); 
+			app = application;
+			app.hypixel = secrets.hypixel_token
+		}))

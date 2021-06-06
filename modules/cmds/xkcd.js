@@ -4,6 +4,7 @@ fetch("https://xkcd.com/info.0.json")
     .then(resp => resp.json())
     .then(json => latest = json.num)
 
+// Command check
 isRealXKCD = (app, msg, args) => {
     if (!args.length) return false;
     if (!parseInt(args[0])) return false;
