@@ -29,8 +29,8 @@ client.on('message', message => {
 	const args = message.content.slice(config.prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
-	var parsed = parse(app, cmds, command, args, message)
-	if (!parsed) message.channel.send("That is not a command!!!!!");
+	parse(app, cmds, command, args, message)
+		.then(parsed => {if (!parsed) message.channel.send("That is not a command !!!!!")})
 
 })
 
@@ -38,8 +38,8 @@ var app;
 var cmds = [];
 client.login(secrets.token)
 	.then(x => client.fetchApplication()
-		.then(application => { 
-			cmds = cmds_(application, config); 
+		.then(application => {
+			cmds = cmds_(application, config);
 			app = application;
 			app.hypixel = secrets.hypixel_token
 		}))
