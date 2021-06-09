@@ -49,7 +49,6 @@ const setTags = async (msg, tags) => {
             msg.tags[tag] = property;
         };
     };
-    console.log(msg);
     return msg;
 };
 

@@ -1,51 +1,16 @@
 const checks = require("./cmds/checks")
 // command modules
+const ping = require('./cmds/ping')
 const help = require("./cmds/help")
 const bible = require('./cmds/bible');
 const bm = require("./cmds/bm")
 const xkcd = require("./cmds/xkcd");
 
-generateCommands = (app, config) => [{
+generateCommands = (app, config) => [ping, {
     "name": ["help", "h", "command", "cmd", "commands", "cmds"],
     "desc": "Provide command information",
     "desc_ext": "Accepts a command as a parameter",
     "func": (msg, args) => help(args, msg, generateCommands(app, config), config.prefix)
-}, {
-    // This command serves mainly as an example so I remember how to write commands
-    // aliases; the first is used as the primary name -> required
-    "name": ["ping", "p"],
-    // description is used in help command; required
-    "desc": "Respond",
-    // optional: provide additional information in help command
-    "desc_ext": "no, really",
-    // main function; required
-    "func": (msg, args) => {
-        msg.channel.send(`No Lol`)
-    },
-    // optional: whether hidden or not in help command
-    "hidden": true,
-    // optional: checks; evaluated before executing a command
-    // are not parsed on subcommands
-    "checks": [checks.return_false, checks.is_owner],
-    // subcommands
-    // they use the same format as other commands
-    "cmds": [{
-            "name": ["bear", "b"],
-            "desc": "CRINGE BEAR",
-            "func": (msg, args) => msg.channel.send("CRINGE BEAR"),
-            "cmds": [{
-                "name": ["owner-only", "o"],
-                "desc": "Return arguments",
-                "func": (msg, args) => msg.channel.send(`your arg(s) are: ${args}`),
-                "checks": [checks.is_owner, checks.argsExist, checks.cleanArgsExist]
-            }]
-        },
-        {
-            "name": ["testing", "test", "t"],
-            "desc": "Testing command",
-            "func": (msg, args) => msg.channel.send("What")
-        }
-    ]
 }, {
     "name": ["bible_verse", "verse", "v", "🙏"],
     "desc": "Return a bible verse",
