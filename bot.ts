@@ -40,7 +40,7 @@ client.on('message', message => {
 
 client.on('message', message => {
     if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-    
+
     const prefixes = ["--", "–"];
 
     var args = message.content.slice(config.prefix.length).trim().split(' ');

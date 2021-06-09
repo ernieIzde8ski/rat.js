@@ -1,3 +1,4 @@
+
 // straightforward
 const removePrefix = (prefix = "", string = "") => {
     if (string.startsWith(prefix)) return string.slice(prefix.length);
@@ -26,7 +27,7 @@ const parse = async (app, cmds, command, args, msg, tags) => {
 
 // execute a command & return True
 const execute = async (app, cmd, args, msg, tags) => {
-    msg = await set_tags(msg, tags)
+    msg = await setTags(msg, tags)
     if (cmd.checks) {
         var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
         failed_checks = failed_checks.map(check => "`" + removePrefix("checks.", check.name) + "`")
@@ -39,14 +40,31 @@ const execute = async (app, cmd, args, msg, tags) => {
     return true;
 };
 
-const set_tags = async (msg, tags) => {
+// returns a message object with tags as a property
+const setTags = async (msg, tags) => {
     msg.tags = {}
     if (tags.length) {
         for (tag of tags) {
-            msg.tags[tag] = true;
-        }
+            [tag, property] = await parseTag(tag);
+            msg.tags[tag] = property;
+        };
     };
+    console.log(msg);
     return msg;
-}
+};
+
+// returns a tag & the property to set it to
+const parseTag = async (tag) => {
+    match = tag.match(/:|=/)
+    if (!match) {
+        return [tag, true];
+    } else {
+        [tag, property] = tag.split(/:|=/, 2);
+        try {
+            property = JSON.parse(property.toLowerCase())
+        } catch (e) {};
+        return [tag, property];
+    };
+};
 
 module.exports = parse
