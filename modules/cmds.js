@@ -9,11 +9,11 @@ generateCommands = (app, config) => [{
 	"name": ["help", "h", "command", "cmd", "commands", "cmds"],
 	"desc": "Provide command information",
 	"desc_ext": "Accepts a command as a parameter",
-	"func": (args, msg) => {
+	"func": (msg, args, tags) => {
 		if (!args.length) {
-			var resp = help.default_help(generateCommands(app, config), config.prefix);
+			var resp = help.default_help(generateCommands(app, config), config.prefix, tags);
 		} else {
-			var resp = help.command_help(generateCommands(app, config), config.prefix, args)
+			var resp = help.command_help(generateCommands(app, config), config.prefix, args, tags)
 		}
 		msg.channel.send(resp)
 	}
@@ -26,7 +26,7 @@ generateCommands = (app, config) => [{
 	// optional: provide additional information in help command
 	"desc_ext": "no, really",
 	// main function; required
-	"func": (args, msg) => {
+	"func": (msg, args, tags) => {
 		msg.channel.send(`No Lol`)
 	},
 	// optional: whether hidden or not in help command
@@ -39,30 +39,26 @@ generateCommands = (app, config) => [{
 	"cmds": [{
 			"name": ["bear", "b"],
 			"desc": "CRINGE BEAR",
-			"func": (args, msg) => msg.channel.send("CRINGE BEAR"),
+			"func": (msg, args, tags) => msg.channel.send("CRINGE BEAR"),
 			"cmds": [{
 				"name": ["owner-only", "o"],
 				"desc": "Return arguments",
-				"func": (args, msg) => msg.channel.send(`your arg(s) are: ${args}`),
+				"func": (msg, args, tags) => msg.channel.send(`your arg(s) are: ${args}`),
 				"checks": [checks.is_owner, checks.argsExist, checks.cleanArgsExist]
 			}]
 		},
 		{
 			"name": ["testing", "test", "t"],
 			"desc": "Testing command",
-			"func": (args, msg) => msg.channel.send("What")
+			"func": (msg, args, tags) => msg.channel.send("What")
 		}
 	]
 }, {
 	"name": ["bible_verse", "verse", "v", "🙏"],
 	"desc": "Return a bible verse",
 	"desc_ext": "usual format is <Book> <Chapter>:<Verse>",
-	"func": (args, msg) => {
+	"func": (msg, args, tags) => {
 		var arg = args.join(" ")
-		if (!arg.length) {
-			msg.channel.send("Please provide Input");
-			return;
-		}
 		bible.get_verse(args.join(" ")).then(text => {
 			if (text.text.length > 1000) {
 				msg.channel.send(`Too long\nthis link might work: ${text.url}`);
@@ -72,12 +68,13 @@ generateCommands = (app, config) => [{
 			message += `>>> ${text.text}`;
 			msg.channel.send(message);
 		});
-	}
+	},
+	"checks": [checks.argsExist]
 }, {
 	"name": ["based_cringe_meter", "bm"],
 	"desc": "Return judgement",
 	"desc_ext": "Requires an argument",
-	"func": (args, msg) => {
+	"func": (msg, args, tags) => {
 		if (!args.length) {
 			msg.channel.send("**You** are **cringe!!!!!!!!!!**");
 			return;
@@ -88,17 +85,17 @@ generateCommands = (app, config) => [{
 }, {
 	"name": ["xkcd", "x"],
 	"desc": "Return an xkcd from an integer",
-	"func": (args, msg) => msg.channel.send(`https://xkcd.com/${args[0]}`),
+	"func": (msg, args, tags) => msg.channel.send(`https://xkcd.com/${args[0]}`),
 	"checks": [xkcd.isRealXKCD],
 	"cmds": [{
 			"name": ["random", "r"],
 			"desc": "Returns a random xkcd",
-			"func": (args, msg) => msg.channel.send(xkcd.random())
+			"func": (msg, args, tags) => msg.channel.send(xkcd.random())
 		},
 		{
 			"name": ["latest", "l"],
 			"desc": "Returns the latest xkcd",
-			"func": (args, msg) => msg.channel.send(xkcd.l)
+			"func": (msg, args, tags) => msg.channel.send(xkcd.l)
 		}
 	]
 

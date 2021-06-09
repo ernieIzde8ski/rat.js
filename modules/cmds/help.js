@@ -2,20 +2,20 @@ var spaces = "";
 
 wrap = resp => "```resp```".replace("resp", resp);
 
-default_help = (cmds, prefix) => {
+default_help = (cmds, prefix, tags) => {
     var resp = "";
-    cmds = cmds.filter(cmd => !cmd.hidden)
-    var max_spaces = get_spaces(cmds)
-    cmds.forEach(cmd => {
+    if (!tags.includes('showAll')) cmds = cmds.filter(cmd => !cmd.hidden);
+    var max_spaces = get_spaces(cmds);
+    for (cmd of cmds) {
         spaces = " ".repeat(max_spaces - cmd.name[0].length);
         resp += `\n${cmd.name[0]}:${spaces}${cmd.desc}`
-    });
+    };
     resp += `\n\nType ${prefix}help for this message.`;
     resp += `\nYou can also type ${prefix}help <command> for more information on a command.`;
     return wrap(resp);
 }
 
-command_help = (cmds, prefix, args) => {
+command_help = (cmds, prefix, args, tags = []) => {
     var resp = "";
 
     c = get_command(cmds, args)
@@ -28,11 +28,11 @@ command_help = (cmds, prefix, args) => {
     if (c.cmds) {
         var max_spaces = get_spaces(c.cmds)
         resp += "\n\nSubcommands:"
-        var spaces = "";
-        c.cmds.filter(cmd => !cmd.hidden).forEach(cmd => {
-            spaces = " ".repeat(max_spaces - cmd.name[0].length)
+        if (!tags.includes("showAll")) c.cmds = c.cmds.filter(cmd => !cmd.hidden);
+        for (cmd of c.cmds) {
+            var spaces = " ".repeat(max_spaces - cmd.name[0].length)
             resp += `\n  ${cmd.name[0]}:${spaces}${cmd.desc}`
-        })
+        }
     };
 
     if (c.checks) {
