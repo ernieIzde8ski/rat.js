@@ -1,10 +1,17 @@
-var spaces = "";
-
 wrap = resp => "```resp```".replace("resp", resp);
 
-default_help = (cmds, prefix, tags) => {
+get_spaces = cmds => {
+    var max_spaces = 0;
+    cmds.forEach(cmd => {
+        len = cmd.name[0].length
+        if (len > max_spaces) max_spaces = len;
+    })
+    return max_spaces + 2
+};
+
+defaultHelp = (msg, cmds, prefix) => {
     var resp = "";
-    if (!tags.includes('showAll')) cmds = cmds.filter(cmd => !cmd.hidden);
+    if (!msg.tags.showAll) cmds = cmds.filter(cmd => !cmd.hidden);
     var max_spaces = get_spaces(cmds);
     for (cmd of cmds) {
         spaces = " ".repeat(max_spaces - cmd.name[0].length);
@@ -15,33 +22,33 @@ default_help = (cmds, prefix, tags) => {
     return wrap(resp);
 }
 
-command_help = (cmds, prefix, args, tags = []) => {
+commandHelp = (msg, cmds, prefix, args) => {
     var resp = "";
 
-    c = get_command(cmds, args)
-    if (c.error) return `error: ${c.error}`
+    cmd = get_command(cmds, args)
+    if (cmd.error) return `error: ${cmd.error}`
 
-    resp += `\n${prefix}${c.path}[${c.name}]\n`;
-    resp += `\n${c.desc}`;
-    if (c.desc_ext) resp += `\n${c.desc_ext}`;
+    resp += `\n${prefix}${cmd.path}[${cmd.name}]\n`;
+    resp += `\n${cmd.desc}`;
+    if (cmd.desc_ext) resp += `\n${cmd.desc_ext}`;
 
-    if (c.cmds) {
-        var max_spaces = get_spaces(c.cmds)
+    if (cmd.cmds) {
+        if (!msg.tags.showAll) cmd.cmds = cmd.cmds.filter(subcmd => !subcmd.hidden);
+        var max_spaces = get_spaces(cmd.cmds)
         resp += "\n\nSubcommands:"
-        if (!tags.includes("showAll")) c.cmds = c.cmds.filter(cmd => !cmd.hidden);
-        for (cmd of c.cmds) {
-            var spaces = " ".repeat(max_spaces - cmd.name[0].length)
-            resp += `\n  ${cmd.name[0]}:${spaces}${cmd.desc}`
+        for (subcmd of cmd.cmds) {
+            var spaces = " ".repeat(max_spaces - subcmd.name[0].length)
+            resp += `\n  ${subcmd.name[0]}:${spaces}${subcmd.desc}`
         }
     };
 
-    if (c.checks) {
+    if (cmd.checks) {
         resp += "\n\nChecks: "
-        resp += String(c.checks.map(check => check.name)).replace(",", ", ")
+        resp += String(cmd.checks.map(check => check.name)).replace(",", ", ")
     }
 
     return wrap(resp);
-}
+};
 
 get_command = (cmds, args, path = "") => {
     arg = args.shift().toLowerCase()
@@ -70,18 +77,12 @@ get_command = (cmds, args, path = "") => {
         // if more subcommands to evaluate
         return get_command(cmd.cmds, args, path)
     }
-}
+};
 
-get_spaces = cmds => {
-    var max_spaces = 0;
-    cmds.forEach(cmd => {
-        len = cmd.name[0].length
-        if (len > max_spaces) max_spaces = len;
-    })
-    return max_spaces + 2
-}
 
-module.exports = {
-    default_help: default_help,
-    command_help: command_help,
+module.exports = (args, msg, cmds, prefix) => {
+    var respuesta = "";
+    if (!args.length) respuesta = defaultHelp(msg, cmds, prefix);
+    else respuesta = commandHelp(msg, cmds, prefix, args);
+    msg.channel.send(respuesta);
 }
