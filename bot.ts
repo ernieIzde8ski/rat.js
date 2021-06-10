@@ -49,17 +49,15 @@ client.on('message', message => {
     var tags = args.filter(arg => startsWithAny(arg, prefixes)).map(arg => removePrefixes(arg, prefixes));
     args = args.filter(arg => !startsWithAny(arg, prefixes));
 
-    parse(app, cmds, command, args, message, tags)
+    parse(client.application, cmds, command, args, message, tags)
         .then(parsed => { if (!parsed) message.channel.send("That is not a command !!!!!") })
 
 })
 
-var app;
 var cmds = [];
 client.login(secrets.token)
     .then(x => client.fetchApplication()
         .then(application => {
-            cmds = cmds_(application, config);
-            app = application;
-            app.hypixel = secrets.hypixel_token
+            client.application = application;
+            cmds = cmds_(client.application, config);
         }))
