@@ -7,6 +7,9 @@ const setTags = require("./modules/tag_parsing")
 const parse = require("./modules/command_parsing")
 const cmds_ = require("./modules/cmds")
 
+// message handling
+const react = require("./modules/reactions")
+
 // continued at bottom
 const Discord = require("discord.js");
 const client = new Discord.Client({
@@ -16,13 +19,15 @@ const client = new Discord.Client({
 const startsWithAny = (str, prefixes) => {
     if (typeof prefixes == "string")
         prefixes = [prefixes];
-    return prefixes.filter(prefix => str.startsWith(prefix)).length == true;
+    // if it does not begin with any
+    return Boolean(prefixes.filter(prefix => str.startsWith(prefix)).length);
 };
 
 const removePrefixes = (str, prefixes) => {
     if (typeof prefixes == "string") prefixes = [prefixes];
     prefixes = prefixes.filter(prefix => str.startsWith(prefix))
     for (var prefix of prefixes) {
+        if (!str.startsWith(prefix)) continue;
         str = str.slice(prefix.length);
     }
     return str
@@ -34,8 +39,9 @@ client.once("ready", () => {
 });
 
 client.on("message", message => {
-    if (message.author.bot) return
-    else if (message.content == config.trigger_word) {
+    if (message.author.bot) return;
+    react(message);
+    if (message.content == config.trigger_word) {
         message.channel.send(config.trigger_word)
         console.log(`${config.trigger_word} from ${message.author.username}#${message.author.discriminator}`)
     }
@@ -44,7 +50,7 @@ client.on("message", message => {
 client.on("message", message => {
     if (!message.content.startsWith(config.prefix) || message.author.bot) return;
 
-    const prefixes = ["--", "–"];
+    const prefixes = ["–", "--", "-"];
 
     var args = message.content.slice(config.prefix.length).trim().split(" ");
     var command = args.shift().toLowerCase();
