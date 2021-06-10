@@ -1,4 +1,3 @@
-
 // straightforward
 const removePrefix = (prefix = "", string = "") => {
     if (string.startsWith(prefix)) return string.slice(prefix.length);
@@ -14,9 +13,9 @@ const parse = async (app, cmds, command, args, msg, tags) => {
         if (!cmd.cmds || !args.length) {
             command_parsed = await execute(app, cmd, args, msg, tags);
         } else {
-            var args_ = args;
+            var args_ = args.map(x => x);
             var command_ = args_.shift().toLowerCase();
-            command_parsed = parse(app, cmd.cmds, command_, args_, msg, tags)
+            command_parsed = await parse(app, cmd.cmds, command_, args_, msg, tags)
             if (!command_parsed) {
                 command_parsed = await execute(app, cmd, args, msg, tags);
             };

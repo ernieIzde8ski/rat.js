@@ -1,3 +1,4 @@
+const checks = require("./checks")
 const fetch = require("node-fetch");
 
 get_verse = async (reference = "John 3:16") => {
@@ -16,4 +17,21 @@ get_verse = async (reference = "John 3:16") => {
     }
 }
 
-module.exports = {get_verse: get_verse}
+module.exports = {
+    "name": ["bible_verse", "verse", "v", "🙏"],
+    "desc": "Return a bible verse",
+    "desc_ext": "usual format is <Book> <Chapter>:<Verse>",
+    "func": (msg, args) => {
+        var arg = args.join(" ")
+        get_verse(args.join(" ")).then(text => {
+            if (text.text.length > 1000) {
+                msg.channel.send(`Too long\nthis link might work: ${text.url}`);
+                return;
+            };
+            var message = `**${text.ref}**\n`;
+            message += `>>> ${text.text}`;
+            msg.channel.send(message);
+        });
+    },
+    "checks": [checks.argsExist]
+}

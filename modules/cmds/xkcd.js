@@ -6,6 +6,7 @@ fetch("https://xkcd.com/info.0.json")
 
 // Command check
 isRealXKCD = (app, msg, args) => {
+    console.log(args, latest)
     if (!args.length) return false;
     if (!parseInt(args[0])) return false;
     var id = parseInt(args[0]);
@@ -24,7 +25,20 @@ randomXKCD = () => {
 }
 
 module.exports = {
-    isRealXKCD: isRealXKCD,
-    random: randomXKCD,
-    l: "https://xkcd.com"
+    "name": ["xkcd", "x"],
+    "desc": "Return an xkcd from an integer",
+    "func": (msg, args) => msg.channel.send(`https://xkcd.com/${args[0]}`),
+    "checks": [isRealXKCD],
+    "cmds": [{
+            "name": ["random", "r"],
+            "desc": "Returns a random xkcd",
+            "func": (msg, args) => msg.channel.send(randomXKCD())
+        },
+        {
+            "name": ["latest", "l"],
+            "desc": "Returns the latest xkcd",
+            "func": (msg, args) => msg.channel.send(`https://xkcd.com/${latest}`)
+        }
+    ]
+
 }
