@@ -25,8 +25,20 @@ module.exports = {
             "cmds": [{
                 "name": ["owner-only", "o"],
                 "desc": "Return arguments",
-                "func": (msg, args) => msg.channel.send(`your arg(s) are: ${args}`),
-                "checks": [checks.is_owner, checks.argsExist, checks.cleanArgsExist]
+                "func": (msg, args) => {
+                    var resp = "";
+                    if (args.length) resp += `your arg(s) are: ${args}\n`.replace(/,/g, ', ');
+                    keys = Object.keys(msg.tags)
+                    if (keys.length) {
+                        var tags = [];
+                        for (key of keys) {
+                            tags.push(`${key}:${msg.tags[key]}`)
+                        }
+                        resp += `your tag(s) are: ${tags}`.replace(/,/g, ', ');
+                    };
+                    msg.channel.send(resp)
+                },
+                "checks": [checks.is_owner, checks.cleanArgsOrTagsExist]
             }]
         },
         {
