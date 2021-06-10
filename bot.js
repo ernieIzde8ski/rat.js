@@ -3,12 +3,15 @@ const secrets = require("./secrets.json")
 const config = require("./config.json")
 
 // command parsing
+const setTags = require("./modules/tag_parsing")
 const parse = require("./modules/command_parsing")
 const cmds_ = require("./modules/cmds")
 
 // continued at bottom
 const Discord = require("discord.js");
-const client = new Discord.Client({ "disableMentions": "everyone" });
+const client = new Discord.Client({
+    "disableMentions": "everyone"
+});
 
 const startsWithAny = (str, prefixes) => {
     if (typeof prefixes == "string")
@@ -49,9 +52,12 @@ client.on("message", message => {
     var tags = args.filter(arg => startsWithAny(arg, prefixes)).map(arg => removePrefixes(arg, prefixes));
     args = args.filter(arg => !startsWithAny(arg, prefixes));
 
-    parse(client.application, cmds, command, args, message, tags)
-        .then(parsed => { if (!parsed) message.channel.send("That is not a command !!!!!") })
-
+    setTags(message, tags).then(message =>
+        parse(client.application, cmds, command, args, message)
+        .then(parsed => {
+            if (!parsed) message.channel.send("That is not a command !!!!!")
+        })
+    )
 })
 
 var cmds = [];
