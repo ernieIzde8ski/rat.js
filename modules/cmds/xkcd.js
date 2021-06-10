@@ -6,7 +6,6 @@ fetch("https://xkcd.com/info.0.json")
 
 // Command check
 isRealXKCD = (app, msg, args) => {
-    console.log(args, latest)
     if (!args.length) return false;
     if (!parseInt(args[0])) return false;
     var id = parseInt(args[0]);

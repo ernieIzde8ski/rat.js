@@ -9,8 +9,9 @@ const parse = async (app, cmds, command, args, msg) => {
     var command_parsed = false;
     cmds = cmds.filter(cmd => cmd.name.includes(command));
     for (cmd of cmds) {
-        // only evaluate if there are no subcommands or no subcommand/parameter is specified
-        if (!cmd.cmds || !args.length) {
+        // only evaluate if there are no subcommands, no subcommand/parameter is specified,
+        // or subcommands are disallowed
+        if (!cmd.cmds || !args.length || msg.tags.noSubcommands || msg.tags.nsc) {
             command_parsed = await execute(app, cmd, args, msg);
         } else {
             var args_ = args.map(x => x);
@@ -25,7 +26,7 @@ const parse = async (app, cmds, command, args, msg) => {
 }
 
 // execute a command & return True
-const execute = async (app, cmd, args, msg, tags) => {
+const execute = async (app, cmd, args, msg) => {
     if (cmd.checks) {
         var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
         failed_checks = failed_checks.map(check => "`" + removePrefix("checks.", check.name) + "`")
