@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 
 get_verse = async (reference = "John 3:16") => {
     var url = "https://bible-api.com/";

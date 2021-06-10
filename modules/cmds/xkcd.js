@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 var latest;
 fetch("https://xkcd.com/info.0.json")
     .then(resp => resp.json())

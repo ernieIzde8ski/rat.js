@@ -1,8 +1,8 @@
 const checks = require("./cmds/checks")
 // command modules
-const ping = require('./cmds/ping')
+const ping = require("./cmds/ping")
 const help = require("./cmds/help")
-const bible = require('./cmds/bible');
+const bible = require("./cmds/bible");
 const bm = require("./cmds/bm")
 const xkcd = require("./cmds/xkcd");
 

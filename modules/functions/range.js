@@ -16,8 +16,8 @@ module.exports = (start = 0, stop = null, step = null) => {
         else step = -1;
     }
 
-    if (!isInteger(start) || !isInteger(stop)) throw Error('Range values must be integers');
-    if (!isInteger(step) || step == 0) throw Error('Step value must be an integer other than 0');
+    if (!isInteger(start) || !isInteger(stop)) throw Error("Range values must be integers");
+    if (!isInteger(step) || step == 0) throw Error("Step value must be an integer other than 0");
 
     var list = [];
     if (step > 0) {

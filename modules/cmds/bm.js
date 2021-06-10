@@ -1,4 +1,4 @@
-const sr = require('seedrandom')
+const sr = require("seedrandom")
 
 var seed = "";
 module.exports = seed => {
