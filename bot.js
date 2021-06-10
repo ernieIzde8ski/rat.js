@@ -24,7 +24,8 @@ const startsWithAny = (str, prefixes) => {
 };
 
 const removePrefixes = (str, prefixes) => {
-    if (typeof prefixes == "string") prefixes = [prefixes];
+    if (typeof prefixes == "string")
+        prefixes = [prefixes];
     prefixes = prefixes.filter(prefix => str.startsWith(prefix))
     for (var prefix of prefixes) {
         if (!str.startsWith(prefix)) continue;
@@ -48,11 +49,11 @@ client.on("message", message => {
 });
 
 client.on("message", message => {
-    if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+    if (!startsWithAny(message.content, config.prefix) || message.author.bot) return;
 
     const prefixes = ["–", "--", "-"];
 
-    var args = message.content.slice(config.prefix.length).trim().split(" ");
+    var args = removePrefixes(message.content, config.prefix).trim().split(" ");
     var command = args.shift().toLowerCase();
 
     var tags = args.filter(arg => startsWithAny(arg, prefixes)).map(arg => removePrefixes(arg, prefixes));

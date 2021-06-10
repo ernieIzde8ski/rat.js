@@ -81,6 +81,7 @@ get_command = (cmds, args, path = "") => {
 
 
 module.exports = (args, msg, cmds, prefix) => {
+    if (typeof prefix == "object") prefix = prefix[0];
     var respuesta = "";
     if (!args.length) respuesta = defaultHelp(msg, cmds, prefix);
     else respuesta = commandHelp(msg, cmds, prefix, args);
