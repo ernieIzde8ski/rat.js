@@ -1,1 +1,1 @@
-node bot.ts
+node bot.js
