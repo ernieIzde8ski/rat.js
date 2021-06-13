@@ -28,8 +28,8 @@ const parse = async (app, cmds, command, args, msg) => {
 // execute a command & return True
 const execute = async (app, cmd, args, msg) => {
     if (cmd.checks) {
-        var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
         if (typeof cmd.checks == "function") cmd.checks = [cmd.checks];
+        var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
         failed_checks = failed_checks.map(check => "`" + removePrefix("checks.", check.name) + "`")
         if (failed_checks.length) {
             msg.channel.send(`error: failed the following check(s): ${String(failed_checks).replace(",", ", ")}`);
