@@ -1,4 +1,4 @@
-const checks = require("./checks")
+const { is_owner, cleanArgsOrTagsExist, return_false } = require("./checks");
 module.exports = {
     // This command serves mainly as an example so I remember how to write commands
     // aliases; the first is used as the primary name -> required
@@ -15,7 +15,7 @@ module.exports = {
     "hidden": true,
     // optional: checks; evaluated before executing a command
     // are not parsed on subcommands
-    "checks": [checks.return_false, checks.is_owner],
+    "checks": [return_false, is_owner],
     // subcommands
     // they use the same format as other commands
     "cmds": [{
@@ -38,7 +38,7 @@ module.exports = {
                     };
                     msg.channel.send(resp)
                 },
-                "checks": [checks.is_owner, checks.cleanArgsOrTagsExist]
+                "checks": [is_owner, cleanArgsOrTagsExist]
             }]
         },
         {

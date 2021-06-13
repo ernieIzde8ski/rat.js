@@ -1,4 +1,4 @@
-const checks = require("./checks")
+const { argsExist } = require("./checks");
 const fetch = require("node-fetch");
 
 get_verse = async (reference = "John 3:16") => {
@@ -33,5 +33,5 @@ module.exports = {
             msg.channel.send(message);
         });
     },
-    "checks": [checks.argsExist]
+    "checks": argsExist
 }

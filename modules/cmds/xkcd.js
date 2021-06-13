@@ -27,7 +27,7 @@ module.exports = {
     "name": ["xkcd", "x"],
     "desc": "Return an xkcd from an integer",
     "func": (msg, args) => msg.channel.send(`https://xkcd.com/${args[0]}`),
-    "checks": [isRealXKCD],
+    "checks": isRealXKCD,
     "cmds": [{
             "name": ["random", "r"],
             "desc": "Returns a random xkcd",

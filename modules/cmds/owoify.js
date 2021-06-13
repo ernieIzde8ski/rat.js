@@ -1,4 +1,5 @@
 const faces = ["(・`ω´・)", ";;w;;", "owo", "UwU", ">w<", "^w^"];
+
 owoify = string => {
     string = string.replace(/(?:r|l)/g, "w");
     string = string.replace(/(?:R|L)/g, "W");
@@ -9,10 +10,13 @@ owoify = string => {
     string = string.replace(/\!+/g, " " + faces[Math.floor(Math.random() * faces.length)] + " ");
     return string;
 }
-const checks = require("./checks")
+
+
+const { argsExist } = require("./checks");
+
 module.exports = {
     "name": ["owoify", "owo", "o"],
     "desc": "Return an owoified message",
     "func": (msg, args) => msg.channel.send(owoify(args.join(" "))),
-    "checks": checks.argsExist
+    "checks": argsExist
 }

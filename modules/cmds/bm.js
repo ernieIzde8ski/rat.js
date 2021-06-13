@@ -1,4 +1,5 @@
-const sr = require("seedrandom")
+const sr = require("seedrandom");
+const { cleanArgsExist } = require("./checks");
 
 bmResp = seed => {
     if (seed.includes("`")) seed = "Armenium";
@@ -24,5 +25,6 @@ module.exports = {
         };
         var resp = bmResp(args.join(" "));
         msg.channel.send(`**${resp.seed}** are **${resp.value}**${resp.punc}`)
-    }
+    },
+    "checks": cleanArgsExist
 }

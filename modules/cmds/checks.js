@@ -1,5 +1,3 @@
-const { ClientApplication } = require("discord.js");
-
 is_owner = (ClientApplication, msg, args) => ClientApplication.owner.id == msg.author.id;
 return_false = (ClientApplication, msg, args) => false;
 argsExist = (ClientApplication, msg, args) => args.length;
