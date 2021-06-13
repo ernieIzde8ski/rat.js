@@ -1,14 +1,14 @@
 // easily customizable variables
-const secrets = require("./secrets.json")
-const config = require("./config.json")
+const secrets = require("./secrets.json");
+const config = require("./config.json");
 
 // command parsing
-const setTags = require("./modules/tag_parsing")
-const parse = require("./modules/command_parsing")
-const cmds_ = require("./modules/cmds")
+const setTags = require("./modules/tag_parsing");
+const parse = require("./modules/command_parsing");
+const cmds_ = require("./modules/cmds");
 
 // message handling
-const react = require("./modules/reactions")
+const react = require("./modules/reactions");
 
 // continued at bottom
 const Discord = require("discord.js");
@@ -26,13 +26,13 @@ const startsWithAny = (str, prefixes) => {
 const removePrefixes = (str, prefixes) => {
     if (typeof prefixes == "string")
         prefixes = [prefixes];
-    prefixes = prefixes.filter(prefix => str.startsWith(prefix))
+    prefixes = prefixes.filter(prefix => str.startsWith(prefix));
     for (var prefix of prefixes) {
         if (!str.startsWith(prefix)) continue;
         str = str.slice(prefix.length);
     }
-    return str
-}
+    return str;
+};
 
 
 client.once("ready", () => {
@@ -73,4 +73,4 @@ client.login(secrets.token)
         .then(application => {
             client.application = application;
             cmds = cmds_(client.application, config);
-        }))
+        }));
