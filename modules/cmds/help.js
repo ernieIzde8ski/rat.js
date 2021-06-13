@@ -44,7 +44,7 @@ commandHelp = (msg, cmds, prefix, args) => {
 
     if (cmd.checks) {
         resp += "\n\nChecks: "
-        resp += String(cmd.checks.map(check => check.name)).replace(",", ", ")
+        resp += cmd.checks.map(check => check.name).join(", ")
     }
 
     return wrap(resp);

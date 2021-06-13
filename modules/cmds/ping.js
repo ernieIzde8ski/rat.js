@@ -27,14 +27,14 @@ module.exports = {
                 "desc": "Return arguments",
                 "func": (msg, args) => {
                     var resp = "";
-                    if (args.length) resp += `your arg(s) are: ${args}\n`.replace(/,/g, ', ');
+                    if (args.length) resp += `your arg(s) are: ${args.join(", ")}\n`;
                     keys = Object.keys(msg.tags)
                     if (keys.length) {
                         var tags = [];
                         for (key of keys) {
                             tags.push(`${key}:${msg.tags[key]}`)
                         }
-                        resp += `your tag(s) are: ${tags}`.replace(/,/g, ', ');
+                        resp += `your tag(s) are: ${tags.join(", ")}`;
                     };
                     msg.channel.send(resp)
                 },

@@ -32,7 +32,7 @@ const execute = async (app, cmd, args, msg) => {
         var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
         failed_checks = failed_checks.map(check => "`" + removePrefix("checks.", check.name) + "`")
         if (failed_checks.length) {
-            msg.channel.send(`error: failed the following check(s): ${String(failed_checks).replace(",", ", ")}`);
+            msg.channel.send(`error: failed the following check(s): ${failed_checks.join(", ")}`);
             return true;
         };
     }
