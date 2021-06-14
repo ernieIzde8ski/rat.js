@@ -28,6 +28,8 @@ commandHelp = (msg, cmds, prefix, args) => {
     cmd = get_command(cmds, args)
     if (cmd.error) return `error: ${cmd.error}`
 
+    if (typeof cmd.desc_ext == "object") cmd.desc_ext = cmd.desc_ext.join("\n")
+
     resp += `\n${prefix}${cmd.path}[${cmd.name}]\n`;
     resp += `\n${cmd.desc}`;
     if (cmd.desc_ext) resp += `\n${cmd.desc_ext}`;
@@ -43,6 +45,7 @@ commandHelp = (msg, cmds, prefix, args) => {
     };
 
     if (cmd.checks) {
+        if (typeof cmd.checks == "function") cmd.checks = [cmd.checks];
         resp += "\n\nChecks: "
         resp += cmd.checks.map(check => check.name).join(", ")
     }
