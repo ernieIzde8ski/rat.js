@@ -1,5 +1,6 @@
 secrets.json
-.idea/**
+.idea/
+.vscode/
 
 # Logs
 logs
