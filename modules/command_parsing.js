@@ -6,33 +6,33 @@ const removePrefix = (prefix = "", string = "") => {
 
 // I only vaguely understand this code anymore
 const parse = async (app, cmds, command, args, msg) => {
-    var command_parsed = false;
+    var commandParsed = false;
     cmds = cmds.filter(cmd => cmd.name.includes(command));
     for (cmd of cmds) {
         // only evaluate if there are no subcommands, no subcommand/parameter is specified,
         // or subcommands are disallowed
         if (!cmd.cmds || !args.length || msg.tags.noSubcommands || msg.tags.nsc) {
-            command_parsed = await execute(app, cmd, args, msg);
+            commandParsed = await execute(app, cmd, args, msg);
         } else {
             var args_ = args.map(x => x);
             var command_ = args_.shift().toLowerCase();
-            command_parsed = await parse(app, cmd.cmds, command_, args_, msg)
-            if (!command_parsed) {
-                command_parsed = await execute(app, cmd, args, msg);
+            commandParsed = await parse(app, cmd.cmds, command_, args_, msg)
+            if (!commandParsed) {
+                commandParsed = await execute(app, cmd, args, msg);
             };
         };
     };
-    return command_parsed
+    return commandParsed
 }
 
 // execute a command & return True
 const execute = async (app, cmd, args, msg) => {
     if (cmd.checks) {
         if (typeof cmd.checks == "function") cmd.checks = [cmd.checks];
-        var failed_checks = cmd.checks.filter(check => !check(app, msg, args))
-        failed_checks = failed_checks.map(check => "`" + removePrefix("checks.", check.name) + "`")
-        if (failed_checks.length) {
-            msg.channel.send(`error: failed the following check(s): ${failed_checks.join(", ")}`);
+        var failedChecks = cmd.checks.filter(check => !check(app, msg, args))
+        failedChecks = failedChecks.map(check => "`" + removePrefix("checks.", check.name) + "`")
+        if (failedChecks.length) {
+            msg.channel.send(`error: failed the following check(s): ${failedChecks.join(", ")}`);
             return true;
         };
     }

@@ -1,7 +1,7 @@
+const range = require("./range")
+
 // defined for internal use
 isInteger = number => number == Math.floor(number);
-
-const range = require("./range")
 
 // identical to Math.random Lol
 random = () => Math.random();
@@ -69,10 +69,10 @@ randRange = (start = 0, stop = null) => {
 randInt = (a, b) => randRange(a, b + 1);
 
 module.exports = {
-    random: random,
-    choice: choice,
-    choices: choices,
-    shuffle: shuffle,
-    randInt: randInt,
-    randRange: randRange
+    random,
+    choice,
+    choices,
+    shuffle,
+    randInt,
+    randRange,
 }

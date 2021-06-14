@@ -1,4 +1,4 @@
-const { is_owner, cleanArgsOrTagsExist, return_false } = require("./checks");
+const { isOwner, cleanArgsOrTagsExist, returnFalse } = require("./checks");
 module.exports = {
     // This command serves mainly as an example so I remember how to write commands
     // aliases; the first is used as the primary name -> required
@@ -15,7 +15,7 @@ module.exports = {
     "hidden": true,
     // optional: checks; evaluated before executing a command
     // are not parsed on subcommands
-    "checks": [return_false, is_owner],
+    "checks": [returnFalse, isOwner],
     // subcommands
     // they use the same format as other commands
     "cmds": [{
@@ -23,7 +23,7 @@ module.exports = {
             "desc": "CRINGE BEAR",
             "func": (msg, args) => msg.channel.send("CRINGE BEAR"),
             "cmds": [{
-                "name": ["owner-only", "o"],
+                "name": ["owneronly", "o"],
                 "desc": "Return arguments",
                 "func": (msg, args) => {
                     var resp = "";
@@ -38,7 +38,7 @@ module.exports = {
                     };
                     msg.channel.send(resp)
                 },
-                "checks": [is_owner, cleanArgsOrTagsExist]
+                "checks": [isOwner, cleanArgsOrTagsExist]
             }]
         },
         {

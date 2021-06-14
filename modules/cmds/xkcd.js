@@ -14,11 +14,11 @@ isRealXKCD = (app, msg, args) => {
 
 
 randomXKCD = () => {
-    var is_real = false
+    var isReal = false
     var int = 0;
-    while (is_real == false) {
+    while (isReal == false) {
         int = Math.ceil(Math.random() * latest);
-        is_real = isRealXKCD("", "", [int])
+        isReal = isRealXKCD("", "", [int])
     }
     return `https://xkcd.com/${int}`
 }

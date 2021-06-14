@@ -15,7 +15,7 @@ bmResp = seed => {
 }
 
 module.exports = {
-    "name": ["based_cringe_meter", "bm"],
+    "name": ["basedCringeMeter", "bm"],
     "desc": "Return judgement",
     "desc_ext": "Requires an argument",
     "func": (msg, args) => {

@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const url = "https://bible-api.com/";
 const urlRandom = "https://labs.bible.org/api/?passage=random&type=json";
 
-get_verse = async (reference = "John 3:16", translation = "KJV") => {
+getVerse = async (reference = "John 3:16", translation = "KJV") => {
     var resp = await fetch(`${url}${reference}?translation=${translation}`);
     resp = await resp.json();
     if (resp.error) return { error: resp.error };
@@ -15,13 +15,13 @@ get_verse = async (reference = "John 3:16", translation = "KJV") => {
         text: resp.text,
         translation: resp.translation_name
     }
-}
+};
 
 getRandomVerse = async (translation = "KJV") => {
     var resp = await fetch(urlRandom);
     resp = (await resp.json())[0];
     var reference = `${resp.bookname} ${resp.chapter}:${resp.verse}`;
-    resp = await get_verse(reference, translation);
+    resp = await getVerse(reference, translation);
     return resp;
 }
 
@@ -33,9 +33,9 @@ embedConstructor = resp => {
         footer: {
             text: `Translation: ${resp.translation}`
         }
-    };
+    }
     return embed;
-}
+};
 
 handleVerse = (msg, resp) => {
     if (resp.error) {
@@ -48,10 +48,10 @@ handleVerse = (msg, resp) => {
 }
 
 module.exports = {
-    "name": ["bible_verse", "verse", "v", "🙏"],
+    "name": ["bibleVerse", "verse", "v", "🙏"],
     "desc": "Return a bible verse",
     "desc_ext": [
-        "usual format is <Book> <Chapter>:<Verse>",
+        "expected format is <Book> <Chapter>:<Verse>",
         [
             "valid tags: --t, --translation",
             "valid options include: KJV (default, English), Cherokee (Cherokee), WEB (English)",
@@ -67,12 +67,13 @@ module.exports = {
             translation = String(msg.tags.translation);
         };
 
-        get_verse(args.join(" "), translation).then(resp => handleVerse(msg, resp));
+        getVerse(args.join(" "), translation).then(resp => handleVerse(msg, resp));
     },
     cmds: [{
         "name": ["random", "r"],
         "desc": "Return a random bible verse",
-        "desc_ext": "Although the same language options are available as the normal command, issues are *very* likely to occur with non-English selections",
+        "desc_ext": ["Although the same language options are available as the normal command,",
+                     "issues are *very* likely to occur with non-English selections"],
         "func": (msg, args) => {
             var translation = "KJV";
             if (msg.tags.t) {

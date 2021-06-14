@@ -42,9 +42,9 @@ client.once("ready", () => {
 client.on("message", message => {
     if (message.author.bot) return;
     react(message);
-    if (message.content == config.trigger_word) {
-        message.channel.send(config.trigger_word)
-        console.log(`${config.trigger_word} from ${message.author.username}#${message.author.discriminator}`)
+    if (message.content == config.triggerWord) {
+        message.channel.send(config.triggerWord)
+        console.log(`${config.triggerWord} from ${message.author.username}#${message.author.discriminator}`)
     }
 });
 

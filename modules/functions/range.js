@@ -7,6 +7,9 @@ examples:
   range(5, -5, step=-2) = [ 5, 3, 1, -1, -3 ]
 */
 
+// defined for errors to be thrown
+const isInteger = number => number == Math.floor(number);
+
 module.exports = (start = 0, stop = null, step = null) => {
     if (stop == null) {
         stop = start;
