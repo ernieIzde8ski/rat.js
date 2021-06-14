@@ -1,6 +1,4 @@
-const {
-    cleanArgsExist
-} = require("./checks");
+const { cleanArgsExist } = require("./checks");
 const fetch = require("node-fetch");
 
 const url = "https://bible-api.com/";
@@ -9,12 +7,8 @@ const urlRandom = "https://labs.bible.org/api/?passage=random&type=json";
 get_verse = async (reference = "John 3:16", translation = "KJV") => {
     var resp = await fetch(`${url}${reference}?translation=${translation}`);
     resp = await resp.json();
-    if (resp.error) return {
-        error: resp.error
-    };
-    else if (typeof resp == "string") return {
-        error: resp
-    };
+    if (resp.error) return { error: resp.error };
+    else if (typeof resp == "string") return { error: resp };
     else return {
         url: `https://www.biblegateway.com/passage/?search=${resp.reference.replace(/ /g, "%20")}`,
         ref: resp.reference,
@@ -27,8 +21,8 @@ getRandomVerse = async (translation = "KJV") => {
     var resp = await fetch(urlRandom);
     resp = (await resp.json())[0];
     var reference = `${resp.bookname} ${resp.chapter}:${resp.verse}`;
-    resp = await get_verse(reference, translation)
-    return resp
+    resp = await get_verse(reference, translation);
+    return resp;
 }
 
 embedConstructor = resp => {
@@ -41,6 +35,16 @@ embedConstructor = resp => {
         }
     };
     return embed;
+}
+
+handleVerse = (msg, resp) => {
+    if (resp.error) {
+        msg.channel.send(`error: ${resp.error}`); return;
+    } else if (resp.text.length > 1000) {
+        msg.channel.send(`error: too long\nthis link might work: <${resp.url}>`); return;
+    }
+
+    msg.channel.send({ embed: embedConstructor(resp) });
 }
 
 module.exports = {
@@ -63,19 +67,7 @@ module.exports = {
             translation = String(msg.tags.translation);
         };
 
-        get_verse(args.join(" "), translation).then(resp => {
-            if (resp.error) {
-                msg.channel.send(`error: ${resp.error}`);
-                return;
-            } else if (resp.text.length > 1000) {
-                msg.channel.send(`error: too long\nthis link might work: <${resp.url}>`);
-                return;
-            };
-
-            msg.channel.send({
-                embed: embedConstructor(resp)
-            })
-        });
+        get_verse(args.join(" "), translation).then(resp => handleVerse(msg, resp));
     },
     cmds: [{
         "name": ["random", "r"],
@@ -90,19 +82,7 @@ module.exports = {
             };
 
             getRandomVerse(translation)
-                .then(resp => {
-                    if (resp.error) {
-                        msg.channel.send(`error: ${resp.error}`);
-                        return;
-                    } else if (resp.text.length > 1000) {
-                        msg.channel.send(`error: too long\nthis link might work: <${resp.url}>`);
-                        return;
-                    };
-
-                    msg.channel.send({
-                        embed: embedConstructor(resp)
-                    })
-                })
+                .then(resp => handleVerse(msg, resp))
         }
     }]
 }
