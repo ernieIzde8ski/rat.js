@@ -36,10 +36,9 @@ module.exports = {
         "usual format is <Book> <Chapter>:<Verse>",
         [
             "valid tags: --t, --translation",
-            "valid options include: KJV (default, King James Version), Cherokee (Cherokee New Testament),",
-            "WEB (World English Bible), Clementine (Clementine Latin Vulgate), Almeida (Portuguese,",
-            "\"João Ferreira de Almeida\"), or RCCV (Romanian Corrected Cornilescu Version)"
-        ].join("\n   ")
+            "valid options include: KJV (default, English), Cherokee (Cherokee), WEB (English)",
+            "Clementine (Latin), Almeida (Portuguese), or RCCV (Romanian)",
+        ].join("\n    ")
     ],
     "checks": argsExist,
     "func": (msg, args) => {
