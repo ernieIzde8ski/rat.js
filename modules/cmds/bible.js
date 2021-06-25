@@ -14,7 +14,7 @@ getVerse = async (reference = "John 3:16", translation = "KJV") => {
         ref: resp.reference,
         text: resp.text,
         translation: resp.translation_name
-    }
+    };
 };
 
 getRandomVerse = async (translation = "KJV") => {
@@ -23,7 +23,7 @@ getRandomVerse = async (translation = "KJV") => {
     var reference = `${resp.bookname} ${resp.chapter}:${resp.verse}`;
     resp = await getVerse(reference, translation);
     return resp;
-}
+};
 
 embedConstructor = resp => {
     embed = {
@@ -33,7 +33,7 @@ embedConstructor = resp => {
         footer: {
             text: `Translation: ${resp.translation}`
         }
-    }
+    };
     return embed;
 };
 
@@ -45,7 +45,7 @@ handleVerse = (msg, resp) => {
     }
 
     msg.channel.send({ embed: embedConstructor(resp) });
-}
+};
 
 module.exports = {
     "name": ["bibleVerse", "verse", "v", "🙏"],
@@ -65,7 +65,7 @@ module.exports = {
             translation = String(msg.tags.t);
         } else if (msg.tags.translation) {
             translation = String(msg.tags.translation);
-        };
+        }
 
         getVerse(args.join(" "), translation).then(resp => handleVerse(msg, resp));
     },
@@ -80,10 +80,10 @@ module.exports = {
                 translation = String(msg.tags.t);
             } else if (msg.tags.translation) {
                 translation = String(msg.tags.translation);
-            };
+            }
 
             getRandomVerse(translation)
-                .then(resp => handleVerse(msg, resp))
+                .then(resp => handleVerse(msg, resp));
         }
     }]
-}
+};

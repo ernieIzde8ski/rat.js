@@ -14,7 +14,7 @@ module.exports = (start = 0, stop = null, step = null) => {
     if (stop == null) {
         stop = start;
         start = 0;
-    }; if (step == null) {
+    } if (step == null) {
         if (start < stop) step = 1;
         else step = -1;
     }
@@ -26,11 +26,11 @@ module.exports = (start = 0, stop = null, step = null) => {
     if (step > 0) {
         for (i = start; i < stop; i += step) {
             list.push(i);
-        };
+        }
     } else {
         for (i = start; i > stop; i += step) {
             list.push(i);
-        };
+        }
     }
     return list;
-}
+};

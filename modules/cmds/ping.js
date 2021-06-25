@@ -9,7 +9,7 @@ module.exports = {
     "desc_ext": "no, really",
     // main function; required
     "func": (msg, args) => {
-        msg.channel.send(`No Lol`)
+        msg.channel.send(`No Lol`);
     },
     // optional: whether hidden or not in help command
     "hidden": true,
@@ -28,15 +28,15 @@ module.exports = {
                 "func": (msg, args) => {
                     var resp = "";
                     if (args.length) resp += `your arg(s) are: ${args.join(", ")}\n`;
-                    keys = Object.keys(msg.tags)
+                    keys = Object.keys(msg.tags);
                     if (keys.length) {
                         var tags = [];
-                        for (key of keys) {
-                            tags.push(`${key}:${msg.tags[key]}`)
+                        for (var key of keys) {
+                            tags.push(`${key}:${msg.tags[key]}`);
                         }
                         resp += `your tag(s) are: ${tags.join(", ")}`;
-                    };
-                    msg.channel.send(resp)
+                    }
+                    msg.channel.send(resp);
                 },
                 "checks": [isOwner, cleanArgsOrTagsExist]
             }]
@@ -47,4 +47,4 @@ module.exports = {
             "func": (msg, args) => msg.channel.send("What")
         }
     ]
-}
+};

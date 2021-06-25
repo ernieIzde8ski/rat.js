@@ -15,4 +15,4 @@ module.exports = {
     tagsExist,
     cleanTagsExist,
     cleanArgsOrTagsExist,
-}
+};

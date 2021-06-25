@@ -11,8 +11,8 @@ bmResp = seed => {
         "seed": seed,
         "value": value,
         "punc": punctuation
-    }
-}
+    };
+};
 
 module.exports = {
     "name": ["basedCringeMeter", "bm"],
@@ -22,9 +22,9 @@ module.exports = {
         if (!args.length) {
             msg.channel.send("**You** are **cringe!!!!!!!!!!**");
             return;
-        };
+        }
         var resp = bmResp(args.join(" "));
-        msg.channel.send(`**${resp.seed}** are **${resp.value}**${resp.punc}`)
+        msg.channel.send(`**${resp.seed}** are **${resp.value}**${resp.punc}`);
     },
     "checks": cleanArgsExist
-}
+};
