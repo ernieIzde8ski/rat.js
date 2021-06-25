@@ -9,6 +9,7 @@ const cmds_ = require("./modules/cmds");
 
 // message handling
 const react = require("./modules/reactions");
+const owo = require("./modules/functions/owoify");
 
 // continued at bottom
 const Discord = require("discord.js");
@@ -49,6 +50,12 @@ client.on("message", message => {
 });
 
 client.on("message", message => {
+    if (message.author.id != 748969260344410283) return;
+    resp = owo(message.content);
+    message.channel.send(resp);
+});
+
+client.on("message", message => {
     if (!startsWithAny(message.content, config.prefix) || message.author.bot) return;
 
     const prefixes = ["–", "--", "-"];
@@ -66,6 +73,8 @@ client.on("message", message => {
         })
     );
 });
+
+
 
 var cmds = [];
 client.login(secrets.token)
