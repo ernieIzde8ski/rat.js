@@ -43,8 +43,8 @@ client.on("message", message => {
     if (message.author.bot) return;
     react(message);
     if (message.content == config.triggerWord) {
-        message.channel.send(config.triggerWord)
-        console.log(`${config.triggerWord} from ${message.author.username}#${message.author.discriminator}`)
+        message.channel.send(config.triggerWord);
+        console.log(`${config.triggerWord} from ${message.author.username}#${message.author.discriminator}`);
     }
 });
 
@@ -62,10 +62,10 @@ client.on("message", message => {
     setTags(message, tags).then(message =>
         parse(client.application, cmds, command, args, message)
         .then(parsed => {
-            if (!parsed) message.channel.send("That is not a command !!!!!")
+            if (!parsed) message.channel.send("That is not a command !!!!!");
         })
-    )
-})
+    );
+});
 
 var cmds = [];
 client.login(secrets.token)
