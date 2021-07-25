@@ -1,0 +1,25 @@
+{
+  "name": "rat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ernieIzde8ski/rat.js.git"
+  },
+  "author": "ernieIzde8ski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ernieIzde8ski/rat.js/issues"
+  },
+  "homepage": "https://github.com/ernieIzde8ski/rat.js#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.2"
+  }
+}
