@@ -24,11 +24,12 @@ client.on("message", async message => {
     let args = str.removeAnyPrefix(message.content, config.prefix).trim();
     [cmd, args] = str.splitOnce(args, /\s+/)
     let flags: Array<object> | undefined;
-
-    // [args, flags] = fparse(args)
+    [args, flags] = fparse(args)
+    
 
     let resp = `Your command is: \`${cmd}\`\n`;
-    if (args !== "") resp += `Your argument(s) are: \`${args}\``
+    if (args !== "") resp += `Your argument(s) are: \`${args}\`\n`
+    if (flags !== undefined) resp += `Your flags are: \`${JSON.stringify(flags)}\``
     await message.channel.send(resp);
 });
 
