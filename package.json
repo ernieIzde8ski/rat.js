@@ -1,0 +1,23 @@
+{
+  "name": "rat.ts",
+  "version": "0.0.1",
+  "description": "Replace rat.py",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ernieIzde8ski/rat.js.git"
+  },
+  "author": "Ernest Izdebski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ernieIzde8ski/rat.js/issues"
+  },
+  "homepage": "https://github.com/ernieIzde8ski/rat.js#readme",
+  "dependencies": {
+    "@typeit/discord": "^4.0.10",
+    "discord.js": "^13.1.0"
+  }
+}
