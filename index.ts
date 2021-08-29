@@ -2,6 +2,7 @@ import * as configs from "./configs.json";
 import * as token from "./token.json";
 
 import { Context } from "./modules/context";
+import { parse_command } from "./modules/command_parser";
 import { Message } from "discord.js";
 import { Client } from "@typeit/discord";
 
@@ -23,10 +24,11 @@ client.on("message", async (message: Message) => {
     if (message.author.bot) return;
     if (message.content.split(" ").includes(configs.trigger)) message.channel.send(configs.trigger);
 
-    if (message.content.startsWith(configs.prefix)) {
-        let context = new Context(message, configs.prefix);
-        message.channel.send("Context: \n```" + context.toString() + "\n```")
-    };
+    try {
+        await parse_command(message, configs.prefix)
+    } catch (Error) {
+        message.channel.send(`${Error.name}: ${Error.message}`)
+    }
 })
 
 async function start() {

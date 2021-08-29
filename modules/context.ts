@@ -1,4 +1,6 @@
 import { Message } from "discord.js";
+import { BadCommandError } from "./errors";
+
 
 export class Context {
     message: Message;
@@ -17,12 +19,13 @@ export class Context {
         [__args__, ...__flags__] = this.message.content.slice(this.invoked_with.length).split(/\s*--/);
         this.arguments = __args__.split(" ");
         this.command = this.arguments.shift();
-
+        if (this.command === "") throw new BadCommandError();
+        
         this.flags = {};
         for (var i of __flags__) {
             let [key, ...values] = i.split(/\s+/);
             let value = values.join(" ");
-
+            
             if (value === "") this.flags[key] = true;
             else {
                 try {
@@ -32,7 +35,7 @@ export class Context {
                 }
             }
         }
-
+        
     }
 
     toString(): string {
