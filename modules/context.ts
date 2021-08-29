@@ -1,16 +1,17 @@
 import { APIMessageContentResolvable, Message, MessageOptions, MessageAdditions } from "discord.js";
+import { Bot } from "../bot";
 import { BadCommandError } from "./errors";
 
 
 export class Context {
-    message: Message;
     invoked_with: string;
+    message: Message;
     command: string | undefined;
     arguments: string[];
     flags: any;
 
 
-    constructor(message: Message, prefix: string) {
+    constructor( prefix: string, message: Message) {
         this.message = message;
         this.invoked_with = prefix;
 
@@ -48,6 +49,6 @@ export class Context {
     }
 
     clone(): Context {
-        return new Context(this.message, this.invoked_with);
+        return new Context(this.invoked_with, this.message);
     }
 }

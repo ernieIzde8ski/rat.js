@@ -1,39 +1,28 @@
-import * as configs from "./configs.json";
+import * as configurations from "./configurations.json";
 import * as token from "./token.json";
 
-import { Context } from "./modules/context";
-import { parse_command } from "./modules/command_parser";
+import { parse_command, commands } from "./modules/command_parser";
 import { Message } from "discord.js";
-import { Client } from "@typeit/discord";
+import { Bot } from "./bot";
 
-const client = new Client({
-    classes: [
-        `${__dirname}/*Discord.ts`,
-    ],
-    silent: false,
-    variablesChar: ":",
-});
+const bot = new Bot(configurations, commands);
 
-client.once("ready", () => { console.log(client.user.tag + " is Online!") })
+bot.client.once("ready", () => { console.log(bot.client.user.tag + " is Online!") })
 
-client.on("message", async (message: Message) => {
+bot.client.on("message", async (message: Message) => {
 
     if (message.channel.type === "text" || message.channel.type === "news")
-        if (message.channel.name === configs.trigger && message.content !== configs.trigger)
+        if (message.channel.name === configurations.trigger && message.content !== configurations.trigger)
             try { return await message.delete() } catch (e) { return };
     if (message.author.bot) return;
-    if (message.content.split(" ").includes(configs.trigger)) message.channel.send(configs.trigger);
+    if (message.content.split(" ").includes(configurations.trigger)) message.channel.send(configurations.trigger);
 
     try {
-        await parse_command(message, configs.prefix)
+        await parse_command(bot, configurations.prefix, message)
     } catch (Error) {
         message.channel.send(`${Error.name}: ${Error.message}`)
     }
 })
 
-async function start() {
-    await client.login(token);
-    // const application = await client.fetchApplication();
-}
 
-start();
+bot.start(token);
