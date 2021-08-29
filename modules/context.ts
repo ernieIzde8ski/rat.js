@@ -39,7 +39,7 @@ export class Context {
     }
 
     toString(): string {
-        // console.log(this)
+        // console.log(this);
         return `Message ID: ${this.message.id}\nPrefix: ${this.invoked_with}\nCommand: ${this.command}\nArguments: ${JSON.stringify(arguments)}\nFlags: ${JSON.stringify(this.flags)}`;
     }
 }
