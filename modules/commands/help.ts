@@ -1,6 +1,4 @@
-import { Bot } from "../../bot";
-import { Command } from "../commands";
-import { Context } from "../context";
+import { Bot, Command, Context } from "../commands";
 import { BadCommandError } from "../errors";
 
 async function send_full_help(bot: Bot, ctx: Context): Promise<void> {

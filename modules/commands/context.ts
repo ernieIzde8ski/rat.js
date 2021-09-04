@@ -1,5 +1,4 @@
-import { Bot } from "../../bot";
-import { Context } from "../context";
+import { Bot, Context } from "../commands";
 
 module.exports = {
     cmds: [{

@@ -1,11 +1,11 @@
 import * as configurations from "./configurations.json";
 import * as token from "./token.json";
 
-import { initialize, parse_command, commands } from "./modules/command_parser";
+import { initialize, parse_command} from "./modules/command_parser";
 import { Message } from "discord.js";
-import { Bot } from "./bot";
+import { Bot } from "./modules/commands";
 
-const bot = new Bot(configurations, commands);
+const bot = new Bot(configurations);
 initialize(bot);
 
 bot.client.once("ready", () => { console.log(bot.client.user.tag + " is Online!") })
