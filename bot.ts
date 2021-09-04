@@ -1,16 +1,12 @@
 import { Client } from "@typeit/discord";
 import { ClientApplication } from "discord.js";
-import { Commands } from "./modules/command_classes";
+import { Commands } from "./modules/commands";
 
 export class Bot {
     client: Client;
     application: ClientApplication;
-    commands: Commands | undefined;
-    configs: {prefix: string, trigger: string};
 
-    constructor(configurations: {prefix: string, trigger: string}, commands: Commands) {
-        this.configs = configurations;
-        this.commands = commands;
+    constructor(public configs: {prefix: string, trigger: string}, public commands: Commands) {
         this.client = new Client({
             classes: [
                 `${__dirname}/*Discord.ts`,
