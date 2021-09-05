@@ -6,3 +6,43 @@ export class BadCommandError extends Error {
         Object.setPrototypeOf(this, BadCommandError.prototype)
     }
 }
+
+export class ArgumentParsingError extends Error {
+    constructor(msg: string = "An error occurred while parsing arguments.") {
+        super(msg)
+        this.name = "ArgumentParsingError";
+        Object.setPrototypeOf(this, ArgumentParsingError.prototype)
+    }
+}
+
+
+export class ExtensionError extends Error {
+    constructor(extension: string, msg: string = "An error occurred in extension 'EXTENSION'.") {
+        super(msg.replace("EXTENSION", extension))
+        this.name = "ExtensionError";
+        Object.setPrototypeOf(this, ExtensionError.prototype)
+    }
+}
+
+export class ExtensionAlreadyLoaded extends ExtensionError {
+    constructor(extension: string, msg: string = "Extension 'EXTENSION' is already loaded.") {
+        super(extension, msg)
+        this.name = "ExtensionAlreadyLoaded";
+        Object.setPrototypeOf(this, ExtensionAlreadyLoaded.prototype)
+    }
+}
+export class ExtensionNotLoaded extends ExtensionError {
+    constructor(extension: string, msg: string = "Extension 'EXTENSION' is not loaded.") {
+        super(extension, msg)
+        this.name = "ExtensionNotLoaded";
+        Object.setPrototypeOf(this, ExtensionNotLoaded.prototype)
+    }
+}
+export class ExtensionLoadError extends ExtensionError {
+    constructor(extension: string, error?: Error, msg: string = "An error occurred in extension 'EXTENSION'.M") {
+        super(extension, msg)
+        this.name = "ExtensionLoadError";
+        if (this.stack && error) this.stack += `\nThis exception was caused by another:\n${error.stack}`;
+        Object.setPrototypeOf(this, ExtensionLoadError.prototype)
+    }
+}

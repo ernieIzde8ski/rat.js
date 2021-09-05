@@ -1,14 +1,13 @@
 import { Client } from "@typeit/discord";
-import { APIMessageContentResolvable, ClientApplication, Message, MessageAdditions, MessageOptions } from "discord.js";
+import { APIMessageContentResolvable, ClientApplication, Message, MessageAdditions, MessageOptions, } from "discord.js";
 import { BadCommandError } from "./errors";
-
 
 
 export class Bot {
     client: Client;
     application: ClientApplication;
 
-    constructor(public configs: {prefix: string, trigger: string}, public commands?: Commands) {
+    constructor(public configs: { prefix: string, trigger: string }, public commands?: Commands) {
         this.client = new Client({
             classes: [
                 `${__dirname}/*Discord.ts`,
@@ -16,56 +15,72 @@ export class Bot {
             silent: false,
             variablesChar: ":",
         });
-        
-    }
 
-    update_commands(commands: Commands): void {
-        this.commands = commands;
     }
 
     async start(token: string): Promise<void> {
         await this.client.login(token)
         this.application = await this.client.fetchApplication();
     }
-    
+
 }
 
-type ExtendedDescription = Array<string | ExtendedDescription>;
+function group_to_titlecase(group: string): string {
+    return group.replace("_", " ").split(/\s+/).filter(str => str.length).map(str => str[0].toUpperCase() + str.slice(1).toLowerCase()).join(" ");
+}
 
 export type RawCommand = {
     name: string,
-    aliases: string[] | undefined,
-    desc: string | undefined,
-    extdesc: ExtendedDescription | undefined,
+    aliases?: string[],
     func: Function,
-    cmds: RawCommand[] | undefined
+    desc?: string,
+    extdesc?: ExtendedDescription,
+    cmds?: RawCommand[]
 }
+
+type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Function };
+
+export function file_to_command_group(path: string): Commands {
+    const resp = new Commands();
+    const key = require.resolve(`./commands/${path}`);
+    if (require.cache[key] !== undefined) delete require.cache[key];
+    const group: raw_command_group = require(`./commands/${path}`);
+    if (group.name === undefined) group.name = group_to_titlecase(path);
+    if (group.initialize !== undefined) group.initialize();
+    for (var raw_command of group.cmds) {
+        let command = new Command(group.name, path, [], raw_command);
+        resp.push(command);
+    }
+    return resp;
+}
+
+
+type ExtendedDescription = Array<string | ExtendedDescription>;
 
 
 export class Command {
     name: string;
-    names: string[];
+    names: Set<string>;
     desc: string;
     extdesc: string;
     func: Function;
     cmds: Commands;
 
-    constructor(public group: string, public parents: string[], raw_command: RawCommand) {
+    constructor(public group: string, public fp: string, public parents: string[], raw_command: RawCommand) {
         this.name = raw_command.name;
-        this.names = (raw_command.aliases.includes(this.name)) ? raw_command.aliases : raw_command.aliases.concat(this.name);
+        this.names = new Set(raw_command.aliases ? raw_command.aliases : []).add(this.name);
         this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : ""
         this.extdesc = (typeof raw_command.extdesc === "object") ? Command.extdesc_constructor(raw_command.extdesc) : ""
         this.func = raw_command.func
 
 
-        let cmds: Array<Command> = [];
+        this.cmds = new Commands();
         if (raw_command.cmds !== undefined) {
             var ancestry = this.parents.concat(this.name);
             for (var cmd of raw_command.cmds) {
-                cmds.push(new Command(group, ancestry, cmd));
+                this.cmds.push(new Command(group, fp, ancestry, cmd));
             }
         }
-        this.cmds = new Commands(cmds)
     }
 
     private static extdesc_constructor(extdesc: ExtendedDescription, indent: number = 0): string {
@@ -80,26 +95,19 @@ export class Command {
     }
 }
 
-export class Commands {
-
-    constructor(public array: Command[] = []) {
-    }
-
-    sort() {
-        this.array.sort((a, b) => a.group.toLowerCase().localeCompare(b.group.toLowerCase()))
-    }
-
-    push(command: Command): void {
-        this.array.push(command);
+export class Commands extends Array<Command> {
+    /** Shorthand for `this.sort((a, b) => a.group.toLowerCase().localeCompare(b.group.toLowerCase()))`. */
+    asort() {
+        this.sort((a, b) => a.group.toLowerCase().localeCompare(b.group.toLowerCase()))
     }
 
     names(): string[] {
-        return this.array.map(command => command.name)
+        return this.map(command => command.name)
     }
 
     get(ctx: Context): Command | null {
         // Filter commands with matching names
-        let cmds = this.array.filter(cmd => cmd.names.includes(ctx.command));
+        let cmds = this.filter(cmd => cmd.names.has(ctx.command));
         // Iterate until a match is found.
         for (var cmd of cmds) {
             // Pass these commands if context flags specify to.
@@ -107,22 +115,20 @@ export class Commands {
                 return null;
             }
             // Return if there are no more arguments or subcommands to parse.
-            if (!ctx.args.length || !cmd.cmds.array.length) return cmd;
+            if (!ctx.args.length || !cmd.cmds.length) return cmd;
             // Check for subcommands.
             let ctx_1 = ctx.clone();
             ctx_1.command = ctx_1.args.shift();
             let subcmd = cmd.cmds.get(ctx_1);
             // Return the subcommand if it exists.
-            return (subcmd === null) ? cmd : subcmd
+            let resp = (subcmd === null) ? cmd : subcmd;
+            console.log(resp)
+            return resp;
         }
         // Return when no commands are matched.
         return null
-
-
-
     }
 }
-
 
 export class Context {
     constructor(

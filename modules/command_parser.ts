@@ -1,9 +1,10 @@
 import { Message } from "discord.js";
 import * as loaded_commands from "./commands/loaded_commands.json"
 import { BadCommandError } from "./errors";
-import { RawCommand, Command, Commands, context_from_message } from "./commands";
+import { RawCommand, Command, Commands, context_from_message, file_to_command_group } from "./commands";
 import { Bot } from "./commands";
 
+type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Function };
 
 function group_to_titlecase(group: string): string {
     return group.replace("_", " ").split(/\s+/).filter(str => str.length).map(str => str[0].toUpperCase() + str.slice(1).toLowerCase()).join(" ");
@@ -11,18 +12,13 @@ function group_to_titlecase(group: string): string {
 
 
 export function initialize(bot: Bot) {
-    bot.commands = new Commands();
-    for (var command_group_filepath of loaded_commands) {
-        var command_group: { cmds: RawCommand[], name: string | undefined, initialize: Function | undefined } = require(`./commands/${command_group_filepath}`);
-        if (command_group.name === undefined) command_group.name = group_to_titlecase(command_group_filepath);
-        if (command_group.initialize !== undefined) command_group.initialize();
-        for (var raw_command of command_group.cmds) {
-            let command = new Command(command_group.name, [], raw_command);
-            bot.commands.push(command);
-        }
+    let commands: Command[] = [];
+    for (var fp of loaded_commands) {
+        let cmds = file_to_command_group(fp);
+        commands = commands.concat(...cmds)
     }
-
-    console.log("Loaded commands: ", bot.commands.array.map(command => command.name).join(", "))
+    bot.commands = new Commands(...commands)
+    console.log("Loaded commands: ", bot.commands.names().join(", "));
 }
 
 

@@ -3,7 +3,7 @@ import { BadCommandError } from "../errors";
 
 async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
     let command_max_length = 0;
-    for (var command of bot.commands.array) {
+    for (var command of bot.commands) {
         if (command.name.length > command_max_length)
             command_max_length = command.name.length;
     }
@@ -11,7 +11,7 @@ async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
 
     let current_group = undefined;
     let resp = "```\n";
-    for (var command of bot.commands.array) {
+    for (var command of bot.commands) {
         if (command.group !== current_group) {
             current_group = command.group;
             resp += (current_group + ":\n");
@@ -30,18 +30,20 @@ async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
 
 async function send_command_help(ctx: Context, command: Command): Promise<void> {
     let resp = "```\n";
+    const names = Array(...command.names).join("|")
     if (command.parents.length) {
-        resp += `${ctx.invoked_with}${command.parents.join(" ")} [${command.names.join("|")}]\n`;
+        resp += `${ctx.invoked_with}${command.parents.join(" ")} [${names}]\n`;
     } else {
-        resp += `${ctx.invoked_with}[${command.names.join("|")}]\n`;
+        
+        resp += `${ctx.invoked_with}[${names}]\n`;
         if (command.desc || command.extdesc) resp += "\n";
     }
     if (command.desc) resp += `${command.desc}\n`;
     if (command.extdesc) resp += `\n${command.extdesc}\n`;
 
-    if (command.cmds.array.length) {
+    if (command.cmds.length) {
         let max_spaces: number = 0;
-        let cmds = command.cmds.array.map(cmd => [cmd.name, cmd.desc]);
+        let cmds = command.cmds.map(cmd => [cmd.name, cmd.desc]);
         for (var cmd of cmds) {
             if (cmd[0].length > max_spaces) max_spaces = cmd[0].length;
         } max_spaces += 4;

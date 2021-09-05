@@ -4,7 +4,7 @@ import { Bot, Context } from "../commands";
 module.exports = {
     cmds: [{
         name: "Test1",
-        aliases: ["t1"],
+        aliases: ["t1", "test"],
         desc: "Description",
         extdesc: ["Parameters:",
             ["None Lol"]
