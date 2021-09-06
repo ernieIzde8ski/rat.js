@@ -1,6 +1,8 @@
 import { Bot, Command, Context } from "../commands";
 import { BadCommandError } from "../errors";
 
+
+/** Returns the full command list. */
 async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
     let command_max_length = 0;
     for (var command of bot.commands) {
@@ -28,6 +30,7 @@ async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
     await ctx.send(resp.replace("{PREFIX}", ctx.invoked_with));
 }
 
+/** Returns the help page of a specific command. */
 async function send_command_help(ctx: Context, command: Command): Promise<void> {
     let resp = "```\n";
     const names = Array(...command.names).join("|");

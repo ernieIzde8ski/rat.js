@@ -1,17 +1,13 @@
 import { Message } from "discord.js";
 import * as loaded_commands from "./commands/loaded_commands.json"
 import { BadCommandError } from "./errors";
-import { RawCommand, Command, Commands, context_from_message, file_to_command_group } from "./commands";
+import { Command, Commands, context_from_message, file_to_command_group } from "./commands";
 import { Bot } from "./commands";
 
-type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Function };
-
-function group_to_titlecase(group: string): string {
-    return group.replace("_", " ").split(/\s+/).filter(str => str.length).map(str => str[0].toUpperCase() + str.slice(1).toLowerCase()).join(" ");
-}
-
-
-export function initialize(bot: Bot) {
+/**
+ * Loads commands and sets them as a property of bot.
+ */
+export function initialize(bot: Bot): void {
     let commands: Command[] = [];
     for (var fp of loaded_commands) {
         let cmds = file_to_command_group(fp);
@@ -22,12 +18,18 @@ export function initialize(bot: Bot) {
 }
 
 
+/**
+ * Parses a message for commands. While not returning anything, this may rarely throw an error.
+ * @param bot A Discord client.
+ * @param prefix String to check if a message is a command.
+ * @param message A Discord message.
+ * @returns void
+ */
 export async function parse_command(bot: Bot, prefix: string, message: Message): Promise<void> {
     if (!message.content.startsWith(prefix)) return;
-    let ctx = context_from_message(prefix, message);
+    const ctx = context_from_message(prefix, message);
 
-    let command = bot.commands.get(ctx);
+    const command = bot.commands.get(ctx);
     if (command === null) throw new BadCommandError();
     await command.func(bot, ctx);
-
 }
