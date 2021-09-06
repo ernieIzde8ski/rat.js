@@ -1,11 +1,16 @@
-import { Bot, Command, Context } from "../commands";
+import { Bot, Command, Commands, Context } from "../commands";
 import { BadCommandError } from "../errors";
 
 
-/** Returns the full command list. */
+/** Returns the full command list.
+ * Use the --show_all flag to display all commands, regardless of ability to use.*/
 async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
     let command_max_length = 0;
-    for (var command of bot.commands) {
+    let commands: Commands = bot.commands;
+    if (!ctx.flags.show_all) {
+        commands = new Commands(...await commands.asyncFilter(async command => await command.check(bot, ctx)));
+    }
+    for (var command of commands) {
         if (command.name.length > command_max_length)
             command_max_length = command.name.length;
     }
@@ -13,7 +18,7 @@ async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
 
     let current_group = undefined;
     let resp = "```\n";
-    for (var command of bot.commands) {
+    for (var command of commands) {
         if (command.group !== current_group) {
             current_group = command.group;
             resp += (current_group + ":\n");

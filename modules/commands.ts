@@ -111,6 +111,12 @@ export class Commands extends Array<Command> {
         this.sort((a, b) => a.group.toLowerCase().localeCompare(b.group.toLowerCase()))
     }
 
+    /** Yeah so like Apparently Array.filter just Doesn't support asynchronous functions */
+    async asyncFilter(callbackfn: (value: Command, index: number, array: Command[]) => unknown): Promise<Command[]> {
+        const results = await Promise.all(this.map(callbackfn));
+        return this.filter((v, index) => results[index])
+    }
+ 
     names(): string[] {
         return this.map(command => command.name)
     }
