@@ -30,14 +30,13 @@ async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
 
 async function send_command_help(ctx: Context, command: Command): Promise<void> {
     let resp = "```\n";
-    const names = Array(...command.names).join("|")
-    if (command.parents.length) {
-        resp += `${ctx.invoked_with}${command.parents.join(" ")} [${names}]\n`;
+    const names = Array(...command.names).join("|");
+    if (command.parents) {
+        resp += `${ctx.invoked_with}${command.parents} [${names}]\n`;
     } else {
-        
         resp += `${ctx.invoked_with}[${names}]\n`;
-        if (command.desc || command.extdesc) resp += "\n";
     }
+    if (command.desc || command.extdesc) resp += "\n";
     if (command.desc) resp += `${command.desc}\n`;
     if (command.extdesc) resp += `\n${command.extdesc}\n`;
 

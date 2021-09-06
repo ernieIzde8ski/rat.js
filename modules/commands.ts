@@ -3,24 +3,16 @@ import { APIMessageContentResolvable, ClientApplication, Message, MessageAdditio
 import { BadCommandError } from "./errors";
 
 
-export class Bot {
-    client: Client;
+export class Bot extends Client {
     application: ClientApplication;
 
     constructor(public configs: { prefix: string, trigger: string }, public commands?: Commands) {
-        this.client = new Client({
-            classes: [
-                `${__dirname}/*Discord.ts`,
-            ],
-            silent: false,
-            variablesChar: ":",
-        });
-
+        super({ classes: [`${__dirname}/*Discord.ts`], silent: false, variablesChar: ":" })
     }
 
     async start(token: string): Promise<void> {
-        await this.client.login(token)
-        this.application = await this.client.fetchApplication();
+        await this.login(token)
+        this.application = await this.fetchApplication();
     }
 
 }
@@ -65,18 +57,19 @@ export class Command {
     extdesc: string;
     func: Function;
     cmds: Commands;
+    parents: string;
 
-    constructor(public group: string, public fp: string, public parents: string[], raw_command: RawCommand) {
+    constructor(public group: string, public fp: string, parents: string[], raw_command: RawCommand) {
         this.name = raw_command.name;
         this.names = new Set(raw_command.aliases ? raw_command.aliases : []).add(this.name);
-        this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : ""
-        this.extdesc = (typeof raw_command.extdesc === "object") ? Command.extdesc_constructor(raw_command.extdesc) : ""
-        this.func = raw_command.func
-
+        this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : "";
+        this.extdesc = (typeof raw_command.extdesc === "object") ? Command.extdesc_constructor(raw_command.extdesc) : "";
+        this.func = raw_command.func;
+        this.parents = parents.join(" ");
 
         this.cmds = new Commands();
         if (raw_command.cmds !== undefined) {
-            var ancestry = this.parents.concat(this.name);
+            const ancestry = parents.concat(this.name);
             for (var cmd of raw_command.cmds) {
                 this.cmds.push(new Command(group, fp, ancestry, cmd));
             }
@@ -111,7 +104,7 @@ export class Commands extends Array<Command> {
         // Iterate until a match is found.
         for (var cmd of cmds) {
             // Pass these commands if context flags specify to.
-            if (ctx.flags.no_subcommands && cmd.parents === []) {
+            if (ctx.flags.no_subcommands && cmd.parents === "") {
                 return null;
             }
             // Return if there are no more arguments or subcommands to parse.
@@ -170,5 +163,5 @@ export function context_from_message(prefix: string, message: Message): Context 
             }
         }
     }
-    return new Context(prefix, message, command, args, flags)
+    return new Context(prefix, message, command, args, flags);
 }

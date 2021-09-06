@@ -8,9 +8,9 @@ import { Bot } from "./modules/commands";
 const bot = new Bot(configurations);
 initialize(bot);
 
-bot.client.once("ready", () => { console.log(bot.client.user.tag + " is Online!") })
+bot.once("ready", () => { console.log(bot.user.tag + " is Online!") })
 
-bot.client.on("message", async (message: Message) => {
+bot.on("message", async (message: Message) => {
 
     if (message.channel.type === "text" || message.channel.type === "news")
         if (message.channel.name === configurations.trigger && message.content !== configurations.trigger)
