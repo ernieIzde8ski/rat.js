@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import * as loaded_commands from "./commands/loaded_commands.json"
-import { BadCommandError } from "./errors";
+import { BadCommandError, CheckFailure } from "./errors";
 import { Command, Commands, context_from_message, file_to_command_group } from "./commands";
 import { Bot } from "./commands";
 
@@ -31,5 +31,6 @@ export async function parse_command(bot: Bot, prefix: string, message: Message):
 
     const command = bot.commands.get(ctx);
     if (command === null) throw new BadCommandError();
+    if (await command.check(bot, ctx) === false) throw new CheckFailure(command.name);
     await command.func(bot, ctx);
 }

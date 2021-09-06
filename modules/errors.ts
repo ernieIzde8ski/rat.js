@@ -15,6 +15,12 @@ export class ArgumentParsingError extends Error {
     }
 }
 
+export class CheckFailure extends Error {
+    constructor(command: string, msg: string = "The check functions for command 'COMMAND' failed.") {
+        super(msg.replace("COMMAND", command));
+        Object.setPrototypeOf(this, CheckFailure.prototype);
+    }
+}
 
 export class ExtensionError extends Error {
     constructor(extension: string, msg: string = "An error occurred in extension 'EXTENSION'.") {
@@ -39,7 +45,7 @@ export class ExtensionNotLoaded extends ExtensionError {
     }
 }
 export class ExtensionLoadError extends ExtensionError {
-    constructor(extension: string, error?: Error, msg: string = "An error occurred in extension 'EXTENSION'.M") {
+    constructor(extension: string, error?: Error, msg: string = "An error occurred in extension 'EXTENSION'.") {
         super(extension, msg)
         this.name = "ExtensionLoadError";
         if (this.stack && error) this.stack += `\nThis exception was caused by another:\n${error.stack}`;

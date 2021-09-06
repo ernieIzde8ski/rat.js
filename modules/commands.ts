@@ -31,12 +31,13 @@ function group_to_titlecase(group: string): string {
 type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Function };
 
 /** Format which commands in command files follow. */
-type RawCommand = {
+export type RawCommand = {
     name: string,
     aliases?: string[],
     func: Function,
     desc?: string,
     extdesc?: ExtendedDescription,
+    check?: Function,
     cmds?: RawCommand[]
 };
 
@@ -70,12 +71,14 @@ export class Command {
     func: Function;
     cmds: Commands;
     parents: string;
+    check: Function
 
     constructor(public group: string, public fp: string, parents: string[], raw_command: RawCommand) {
         this.name = raw_command.name;
         this.names = new Set(raw_command.aliases ? raw_command.aliases : []).add(this.name);
         this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : "";
         this.extdesc = (typeof raw_command.extdesc === "object") ? Command.extdesc_constructor(raw_command.extdesc) : "";
+        this.check = (raw_command.check === undefined) ? async (a: Bot, b: Context) => true : raw_command.check;
         this.func = raw_command.func;
         this.parents = parents.join(" ");
 

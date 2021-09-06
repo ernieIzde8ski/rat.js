@@ -20,8 +20,7 @@ bot.on("message", async (message: Message) => {
     // Reply to messages containing 'rat' with 'rat'.
     if (message.content.split(" ").includes(configurations.trigger)) message.channel.send(configurations.trigger);
     // Return before trying to parse commands in channels named 'rat'.
-    if ((message.channel.type === "text" || message.channel.type === "news") ? message.channel.name : false)
-        return message.channel.send(configurations.trigger);
+    if ((message.channel.type === "text" || message.channel.type === "news") ? message.channel.name === configurations.trigger : false) return;
 
 
     try {

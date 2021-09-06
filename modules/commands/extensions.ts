@@ -75,29 +75,25 @@ async function func(bot: commands.Bot, ctx: commands.Context, args: Set<string>,
 }
 
 
-module.exports = {
-    cmds: [{
-        name: "load", aliases: ["l"], func: async (bot: commands.Bot, ctx: commands.Context) => {
-            // Split arguments by commas & spaces, load them, and return the responses.
-            const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
-            let resps = await func(bot, ctx, args, Load);
-            for (var resp of resps) await ctx.send(resp);
-
-        }
-    }, {
-        name: "unload", aliases: ["u"], func: async (bot: commands.Bot, ctx: commands.Context) => {
-            // Split arguments by commas & spaces, unload them, and return the responses.
-            const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
-            let resps = await func(bot, ctx, args, Unload);
-            for (var resp of resps) await ctx.send(resp);
-        }
-    }, {
-        name: "reload", aliases: ["r"], func: async (bot: commands.Bot, ctx: commands.Context) => {
-            // Split arguments by commas & spaces, reload them, and return the responses.
-            const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
-            let resps = await func(bot, ctx, args, Reload);
-            for (var resp of resps) await ctx.send(resp);
-        }
-    }
-    ]
-}
+module.exports = {cmds: [{
+    name: "load", aliases: ["l"], func: async (bot: commands.Bot, ctx: commands.Context) => {
+        // Split arguments by commas & spaces, load them, and return the responses.
+        const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
+        let resps = await func(bot, ctx, args, Load);
+        for (var resp of resps) await ctx.send(resp);
+    }, check: async (bot: commands.Bot, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
+}, {
+    name: "unload", aliases: ["u"], func: async (bot: commands.Bot, ctx: commands.Context) => {
+        // Split arguments by commas & spaces, unload them, and return the responses.
+        const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
+        let resps = await func(bot, ctx, args, Unload);
+        for (var resp of resps) await ctx.send(resp);
+    }, check: async (bot: commands.Bot, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
+}, {
+    name: "reload", aliases: ["r"], func: async (bot: commands.Bot, ctx: commands.Context) => {
+        // Split arguments by commas & spaces, reload them, and return the responses.
+        const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
+        let resps = await func(bot, ctx, args, Reload);
+        for (var resp of resps) await ctx.send(resp);
+    }, check: async (bot: commands.Bot, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
+}]}
