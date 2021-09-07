@@ -1,5 +1,5 @@
 import { Client } from "@typeit/discord";
-import { APIMessageContentResolvable, ClientApplication, Message, MessageAdditions, MessageOptions, } from "discord.js";
+import { APIMessageContentResolvable, ClientApplication, GuildMember, Message, MessageAdditions, MessageOptions, } from "discord.js";
 import { BadCommandError } from "./errors";
 
 /**
@@ -116,7 +116,7 @@ export class Commands extends Array<Command> {
         const results = await Promise.all(this.map(callbackfn));
         return this.filter((v, index) => results[index])
     }
- 
+
     names(): string[] {
         return this.map(command => command.name)
     }
@@ -148,10 +148,13 @@ export class Commands extends Array<Command> {
 
 /** Context passed to all invocations of Command. */
 export class Context {
+    self?: GuildMember
     constructor(
         public invoked_with: string, public message: Message, public command: string, public args: string[], public flags: any
-    ) { }
-    
+    ) { 
+        this.self = this.message?.guild?.me;
+    }
+
     /** Shorthand for Context.message.channel.send. */
     async send(content: APIMessageContentResolvable | (MessageOptions & { split?: false; }) | MessageAdditions): Promise<Message> {
         return await this.message.channel.send(content)
@@ -188,9 +191,9 @@ export function context_from_message(prefix: string, message: Message): Context 
         if (value === "") flags[key] = true;
         else {
             try {
-                this.flags[key] = JSON.parse(value);
+                flags[key] = JSON.parse(value);
             } catch (e) {
-                this.flags[key] = value;
+                flags[key] = value;
             }
         }
     }

@@ -1,7 +1,7 @@
 // I went over to StackOverflow, copied a format, and added an extra line. I have no idea how this works.
 export class BadCommandError extends Error {
     constructor(msg: string = "No valid command was passed.") {
-        super(msg)
+        super(msg);
         this.name = "BadCommandError";
         Object.setPrototypeOf(this, BadCommandError.prototype)
     }
@@ -9,9 +9,16 @@ export class BadCommandError extends Error {
 
 export class ArgumentParsingError extends Error {
     constructor(msg: string = "An error occurred while parsing arguments.") {
-        super(msg)
+        super(msg);
         this.name = "ArgumentParsingError";
         Object.setPrototypeOf(this, ArgumentParsingError.prototype)
+    }
+}
+
+export class TranslationNotFound extends Error {
+    constructor(translation: string, msg: string = "Translation 'TRANSLATION' was not found.") {
+        super(msg.replace("TRANSLATION", translation));
+        Object.setPrototypeOf(this, TranslationNotFound.prototype)
     }
 }
 
