@@ -2,13 +2,14 @@ import { Client } from "@typeit/discord";
 import { APIMessageContentResolvable, ClientApplication, GuildMember, Message, MessageAdditions, MessageOptions, } from "discord.js";
 import { BadCommandError } from "./errors";
 
-/**
- * Extension of Discord client.
- */
-export class Bot extends Client {
-    application: ClientApplication;
 
-    constructor(public configs: { prefix: string, trigger: string }, public commands?: Commands) {
+/** Format for configurations.json. */
+export type Configs = { prefix: string, trigger: string, git: string, invite: string, songs: Array<string> }
+/** Extension of Discord client. */
+export class Bot extends Client {
+    application?: ClientApplication;
+
+    constructor(public configs: Configs, public commands?: Commands) {
         super({ classes: [`${__dirname}/*Discord.ts`], silent: false, variablesChar: ":" })
     }
 
@@ -151,8 +152,8 @@ export class Context {
     self?: GuildMember
     constructor(
         public invoked_with: string, public message: Message, public command: string, public args: string[], public flags: any
-    ) { 
-        this.self = this.message?.guild?.me;
+    ) {
+        this.self = this.message.guild?.me;
     }
 
     /** Shorthand for Context.message.channel.send. */
