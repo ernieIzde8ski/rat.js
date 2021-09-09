@@ -1,6 +1,7 @@
 import { Client } from "@typeit/discord";
 import { APIMessageContentResolvable, ClientApplication, GuildMember, Message, MessageAdditions, MessageOptions, } from "discord.js";
 import { BadCommandError } from "./errors";
+const fuzz = require("fuzzball");
 
 
 /** Format for configurations.json. */
@@ -143,6 +144,26 @@ export class Commands extends Array<Command> {
             return resp;
         }
         // Return when no commands are matched.
+        return null
+    }
+    
+    fuzzy_get(ctx: Context): Command | null {
+        // This follows the same logic as this.get, with the exception of the initial filter catching only close items.
+        let cmds = this.filter(cmd => fuzzy.ratio(cmd.name, ctx.command) > 80).sort((a, b) => fuzzy.ratio(a.name, ctx.command) > );
+        for (var cmd of cmds) {
+            // Pass these commands if context flags specify to.
+            if (ctx.flags.no_subcommands && cmd.parents === "") {
+                return null;
+            }
+            if (!ctx.args.length || !cmd.cmds.length) return cmd;
+            // Check for subcommands.
+            let ctx_1 = ctx.clone();
+            ctx_1.command = ctx_1.args.shift();
+            let subcmd = cmd.cmds.get(ctx_1);
+            let resp = (subcmd === null) ? cmd : subcmd;
+            console.log(resp)
+            return resp;
+        }
         return null
     }
 }
