@@ -29,8 +29,21 @@ export async function parse_command(bot: Bot, prefix: string, message: Message):
     if (!message.content.startsWith(prefix)) return;
     const ctx = context_from_message(prefix, message);
 
-    const command = bot.commands.get(ctx);
-    if (command === null) throw new BadCommandError();
-    if (await command.check(bot, ctx) === false) throw new CheckFailure(command.name);
-    await command.func(bot, ctx);
+    try {
+        const command = bot.commands.get(ctx);
+        if (command === null) throw new BadCommandError();
+        if (await command.check(bot, ctx) === false) throw new CheckFailure(command.name);
+        await command.func(bot, ctx);
+    } catch (err) {
+        let resp = "```\n";
+        if (ctx.flags.show_stack) resp += err.stack + "\n";
+        else resp += `${err.name}: ${err.message}\n`;
+
+        if (err.name === "BadCommandError") {
+            const match = bot.commands.fuzzy_get(ctx);
+            if (match === null) resp += "No similar command was found.\n";
+            else resp += `Closest similar command: ${match.name}\n`;
+        }
+        await ctx.send(resp + "```");
+    }
 }

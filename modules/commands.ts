@@ -125,7 +125,7 @@ export class Commands extends Array<Command> {
 
     get(ctx: Context): Command | null {
         // Filter commands with matching names
-        let cmds = this.filter(cmd => cmd.names.has(ctx.command));
+        const cmds = this.filter(cmd => cmd.names.has(ctx.command));
         // Iterate until a match is found.
         for (var cmd of cmds) {
             // Pass these commands if context flags specify to.
@@ -135,13 +135,11 @@ export class Commands extends Array<Command> {
             // Return if there are no more arguments or subcommands to parse.
             if (!ctx.args.length || !cmd.cmds.length) return cmd;
             // Check for subcommands.
-            let ctx_1 = ctx.clone();
+            const ctx_1 = ctx.clone();
             ctx_1.command = ctx_1.args.shift();
-            let subcmd = cmd.cmds.get(ctx_1);
+            const subcmd = cmd.cmds.get(ctx_1);
             // Return the subcommand if it exists.
-            let resp = (subcmd === null) ? cmd : subcmd;
-            console.log(resp)
-            return resp;
+            return  (subcmd === null) ? cmd : subcmd;
         }
         // Return when no commands are matched.
         return null
@@ -149,7 +147,7 @@ export class Commands extends Array<Command> {
     
     fuzzy_get(ctx: Context): Command | null {
         // This follows the same logic as this.get, with the exception of the initial filter catching only close items.
-        let cmds = this.filter(cmd => fuzzy.ratio(cmd.name, ctx.command) > 80).sort((a, b) => fuzzy.ratio(a.name, ctx.command) > );
+        const cmds = this.filter(cmd => fuzz.partial_ratio(cmd.name, ctx.command) > 80).sort((a, b) => (fuzz.ratio(a.name, ctx.command) < fuzz.ratio(b.name, ctx.command)) ? -1 : 1);
         for (var cmd of cmds) {
             // Pass these commands if context flags specify to.
             if (ctx.flags.no_subcommands && cmd.parents === "") {
@@ -157,12 +155,10 @@ export class Commands extends Array<Command> {
             }
             if (!ctx.args.length || !cmd.cmds.length) return cmd;
             // Check for subcommands.
-            let ctx_1 = ctx.clone();
+            const ctx_1 = ctx.clone();
             ctx_1.command = ctx_1.args.shift();
-            let subcmd = cmd.cmds.get(ctx_1);
-            let resp = (subcmd === null) ? cmd : subcmd;
-            console.log(resp)
-            return resp;
+            const subcmd = cmd.cmds.get(ctx_1);
+            return (subcmd === null) ? cmd : subcmd;
         }
         return null
     }

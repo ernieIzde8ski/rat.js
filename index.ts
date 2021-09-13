@@ -25,9 +25,9 @@ bot.on("message", async (message: Message) => {
 
     try {
         await parse_command(bot, configurations.prefix, message);
-    } catch (Error) {
-        message.channel.send(`${Error.name}: ${Error.message}`);
-        console.log(Error.stack)
+    } catch (err) {
+        message.channel.send(`${err.name}: ${err.message}`);
+        console.log(err.stack)
     }
 })
 

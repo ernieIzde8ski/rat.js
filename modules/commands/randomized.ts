@@ -11,10 +11,10 @@ function random_song(arr: Array<string>): string {
     return arr[Math.floor(arr.length * Math.random())];
 }
 function random_int(start: number, stop: number, rng: Function = Math.random): number {
-    return Math.floor(stop*rng() + start);
+    return Math.floor(stop * rng() + start);
 }
 function random_percent(rng: Function = Math.random, precision: number = 2): number {
-    return Math.round(rng() * (10**(precision+2))) / 10 ** (precision)
+    return Math.round(rng() * (10 ** (precision + 2))) / 10 ** (precision)
 }
 
 
@@ -29,9 +29,7 @@ module.exports = {
     }, {
         name: "random_song", aliases: ["rs", "song"],
         desc: "Return a random song",
-        func: async (bot: Bot, ctx: Context) => {
-            await ctx.send(`https://youtu.be/${random_song(bot.configs.songs)}`
-        }
+        func: async (bot: Bot, ctx: Context) => await ctx.send(`https://youtu.be/${random_song(bot.configs.songs)}`)
     }, {
         name: "based_meter", aliases: ["bm"],
         desc: "Determine basedness",
@@ -40,14 +38,15 @@ module.exports = {
             if (!args.length) args = "Your";
             const rng = seedrandom(args);
             const values = [random_choice(['based', 'cringe'], rng), random_choice(['!', '?', '.'], rng), random_int(1, 7, rng)];
-            const resp = `**${args.replace('*', "")}** are **${values[0]}${values[1].repeat(values[2])}`;
-            await ctx.send(resp)
+            const resp = `**${args.replace('*', "")}** are **${values[0]}${values[1].repeat(values[2])}**`;
+            await ctx.send(resp);
         }
     }, {
         name: "gobi_meter", aliases: ["gm"],
         func: async (bot: Bot, ctx: Context) => {
-            const seed = seedrandom(ctx.args.length ? ctx.args.join(" ") : "Your");
-            await ctx.send(random_percent(seed));
+            const args = ctx.args.length ? ctx.args.join(" ") : "Your";
+            const seed = seedrandom(args);
+            await ctx.send(`**${args}** are **${random_percent(seed)}** percent **Gobi**.`);
         }
     }]
-} 
+}
