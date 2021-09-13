@@ -2,7 +2,7 @@ import { Bot, Context } from "../commands";
 const seedrandom = require("seedrandom");
 
 
-function random_choice(arr: Array<any>, rng?: Function = Math.random): any {
+function random_choice(arr: Array<any>, rng: Function = Math.random): any {
     if (!arr.length) throw new Error();
     return arr[Math.floor(arr.length * rng())];
 }
@@ -10,8 +10,11 @@ function random_song(arr: Array<string>): string {
     if (!arr?.length) return "7-iRf9AWoyE";
     return arr[Math.floor(arr.length * Math.random())];
 }
-function random_int(start: number, stop: number, rng?: Function = math.random): number {
+function random_int(start: number, stop: number, rng: Function = Math.random): number {
     return Math.floor(stop*rng() + start);
+}
+function random_percent(rng: Function = Math.random, precision: number = 2): number {
+    return Math.round(rng() * (10**(precision+2))) / 10 ** (precision)
 }
 
 
@@ -39,6 +42,12 @@ module.exports = {
             const values = [random_choice(['based', 'cringe'], rng), random_choice(['!', '?', '.'], rng), random_int(1, 7, rng)];
             const resp = `**${args.replace('*', "")}** are **${values[0]}${values[1].repeat(values[2])}`;
             await ctx.send(resp)
+        }
+    }, {
+        name: "gobi_meter", aliases: ["gm"],
+        func: async (bot: Bot, ctx: Context) => {
+            const seed = seedrandom(ctx.args.length ? ctx.args.join(" ") : "Your");
+            await ctx.send(random_percent(seed));
         }
     }]
 } 
