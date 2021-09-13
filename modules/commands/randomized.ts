@@ -2,14 +2,18 @@ import { Bot, Context } from "../commands";
 const seedrandom = require("seedrandom");
 
 
-function random_choice(arr: Array<any>): any {
+function random_choice(arr: Array<any>, rng?: Function = Math.random): any {
     if (!arr.length) throw new Error();
-    return arr[Math.floor(arr.length * Math.random())];
+    return arr[Math.floor(arr.length * rng())];
 }
 function random_song(arr: Array<string>): string {
     if (!arr?.length) return "7-iRf9AWoyE";
     return arr[Math.floor(arr.length * Math.random())];
 }
+function random_int(start: number, stop: number, rng?: Function = math.random): number {
+    return Math.floor(stop*rng() + start);
+}
+
 
 module.exports = {
     cmds: [{
@@ -31,7 +35,10 @@ module.exports = {
         func: async (bot: Bot, ctx: Context) => {
             let args = ctx.args.join(' ');
             if (!args.length) args = "Your";
-            
+            const rng = seedrandom(args);
+            const values = [random_choice(['based', 'cringe'], rng), random_choice(['!', '?', '.'], rng), random_int(1, 7, rng)];
+            const resp = `**${args.replace('*', "")}** are **${values[0]}${values[1].repeat(values[2])}`;
+            await ctx.send(resp)
         }
     }]
 } 
