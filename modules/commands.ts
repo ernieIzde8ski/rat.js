@@ -36,7 +36,7 @@ type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Funct
 export type RawCommand = {
     name: string,
     aliases?: string[],
-    func: Function,
+    func: (bot: Bot, ctx: Context) => Promise<void | any>,
     desc?: string,
     extdesc?: ExtendedDescription,
     check?: Function,
@@ -70,7 +70,7 @@ export class Command {
     names: Set<string>;
     desc: string;
     extdesc: string;
-    func: Function;
+    func: (bot: Bot, ctx: Context) => Promise<void | any>;
     cmds: Commands;
     parents: string;
     check: Function
