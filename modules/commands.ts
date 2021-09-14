@@ -125,42 +125,34 @@ export class Commands extends Array<Command> {
 
     get(ctx: Context): Command | null {
         // Filter commands with matching names
-        const cmds = this.filter(cmd => cmd.names.has(ctx.command));
-        // Iterate until a match is found.
-        for (var cmd of cmds) {
-            // Pass these commands if context flags specify to.
-            if (ctx.flags.no_subcommands && cmd.parents === "") {
-                return null;
-            }
-            // Return if there are no more arguments or subcommands to parse.
-            if (!ctx.args.length || !cmd.cmds.length) return cmd;
-            // Check for subcommands.
-            const ctx_1 = ctx.clone();
-            ctx_1.command = ctx_1.args.shift();
-            const subcmd = cmd.cmds.get(ctx_1);
-            // Return the subcommand if it exists.
-            return  (subcmd === null) ? cmd : subcmd;
-        }
-        // Return when no commands are matched.
-        return null
+        const cmd = this.filter(cmd => cmd.names.has(ctx.command))[0];
+        if (cmd === undefined) return null;
+        // Pass this command if context flags specify to.
+        if ((ctx.flags.no_subcommands || ctx.flags.nsc) && cmd.parents.length) return null;
+        // Return if there are no more arguments or subcommands to parse.
+        if (!ctx.args.length || !cmd.cmds.length) return cmd;
+        // Check for subcommands.
+        const ctx_1 = ctx.clone();
+        ctx_1.command = ctx_1.args.shift();
+        const subcmd = cmd.cmds.get(ctx_1);
+        // Return the subcommand if it exists.
+        return subcmd ?? cmd;
     }
-    
+
     fuzzy_get(ctx: Context): Command | null {
         // This follows the same logic as this.get, with the exception of the initial filter catching only close items.
-        const cmds = this.filter(cmd => fuzz.partial_ratio(cmd.name, ctx.command) > 80).sort((a, b) => (fuzz.ratio(a.name, ctx.command) < fuzz.ratio(b.name, ctx.command)) ? -1 : 1);
-        for (var cmd of cmds) {
-            // Pass these commands if context flags specify to.
-            if (ctx.flags.no_subcommands && cmd.parents === "") {
-                return null;
-            }
-            if (!ctx.args.length || !cmd.cmds.length) return cmd;
-            // Check for subcommands.
-            const ctx_1 = ctx.clone();
-            ctx_1.command = ctx_1.args.shift();
-            const subcmd = cmd.cmds.get(ctx_1);
-            return (subcmd === null) ? cmd : subcmd;
-        }
-        return null
+        const cmd = this.filter(cmd => fuzz.partial_ratio(cmd.name, ctx.command) > 80).sort((a, b) => (fuzz.ratio(a.name, ctx.command) < fuzz.ratio(b.name, ctx.command)) ? -1 : 1)[0];
+        if (cmd === undefined) return null;
+        // Pass this command if context flags specify to.
+        if (ctx.flags.no_subcommands && cmd.parents.length) return null;
+        // Return if there are no more arguments or subcommands to parse.
+        if (!ctx.args.length || !cmd.cmds.length) return cmd;
+        // Check for subcommands.
+        const ctx_1 = ctx.clone();
+        ctx_1.command = ctx_1.args.shift();
+        const subcmd = cmd.cmds.get(ctx_1);
+        // Return the subcommand if it exists.
+        return subcmd ?? cmd;
     }
 }
 
@@ -180,6 +172,7 @@ export class Context {
 
     /** Returns some basic information about the invocation context. */
     toString(): string {
+        console.log(this.args);
         return `Message ID: ${this.message.id}\nPrefix: ${this.invoked_with}\nCommand: ${this.command}\nArguments: ${JSON.stringify(this.args)}\nFlags: ${JSON.stringify(this.flags)}`;
     }
 
