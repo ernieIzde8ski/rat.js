@@ -1,12 +1,12 @@
 import * as configurations from "./configurations.json";
-import * as token from "./token.json";
+import * as secrets from "./secrets.json";
 
 import { initialize as initialize_commands, parse_command} from "./modules/command_parser";
 import { Message } from "discord.js";
-import { Bot } from "./modules/commands";
+import { Client } from "./modules/commands";
 
 // Initialize the bot class and initialize its commands/events.
-const bot = new Bot(configurations);
+const bot = new Client(configurations, secrets);
 initialize_commands(bot);
 
 bot.once("ready", () => { console.log(bot.user.tag + " is Online!") })
@@ -32,4 +32,4 @@ bot.on("message", async (message: Message) => {
 })
 
 
-bot.start(token);
+bot.login(secrets.token);

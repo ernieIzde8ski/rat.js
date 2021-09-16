@@ -1,4 +1,4 @@
-import { Bot, Context } from "../commands";
+import { Client, Context } from "../commands";
 import axios from "axios";
 import { TranslationNotFound } from "../errors";
 const twitterSplitter: ((text: string, limit: number, joiner: string) => string[]) = require("twitter-splitter");
@@ -29,7 +29,7 @@ async function get_text(ref: string, translation: string = "kjv", characters_per
 module.exports = {
     cmds: [{
         name: "verse", aliases: ["text", "v"],
-        func: async (bot: Bot, ctx: Context) => {
+        func: async (bot: Client, ctx: Context) => {
             const resp = await get_text(ctx.args.join(" "), ctx.flags.translation ?? "kjv", (ctx.flags.characters ?? ctx.flags.characters_per_line) ?? 50, ctx.flags.display_verse ?? true)
             const embed = {
                 title: resp.ref, description: "```\n" + resp.text + "\n```", color: ctx.self.displayColor,

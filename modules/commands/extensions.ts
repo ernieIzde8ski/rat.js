@@ -4,7 +4,7 @@ import * as fs from 'fs/promises';
 import { Util } from "discord.js";
 
 /** Loads an extension by filepath. May throw errors. */
-function Load(bot: commands.Bot, fp: string): void {
+function Load(bot: commands.Client, fp: string): void {
     if (bot.commands.filter(cmd => cmd.fp === fp).length) throw new errors.ExtensionAlreadyLoaded(fp);
     try {
         const arr = commands.file_to_command_group(fp);
@@ -14,14 +14,14 @@ function Load(bot: commands.Bot, fp: string): void {
     }
 }
 /** Unloads an extension by filepath or group name. May throw errors. */
-function Unload(bot: commands.Bot, fp_or_group: string): void {
+function Unload(bot: commands.Client, fp_or_group: string): void {
     const original_length = bot.commands.length;
     console.log(bot.commands.filter(cmd => [cmd.group, cmd.fp].includes(fp_or_group)).map(cmd => cmd.name))
     bot.commands = new commands.Commands(...bot.commands.filter(cmd => ![cmd.group, cmd.fp].includes(fp_or_group)));
     if (bot.commands.length === original_length) throw new errors.ExtensionNotLoaded(fp_or_group);
 }
 /** Reloads an extension by filepath or group name. May throw errors. */
-function Reload(bot: commands.Bot, fp_or_group: string): void {
+function Reload(bot: commands.Client, fp_or_group: string): void {
     let paths = new Set(bot.commands.filter(cmd => [cmd.group, cmd.fp].includes(fp_or_group)).map(cmd => cmd.fp));
     if (!paths.size) throw new errors.ExtensionNotLoaded(fp_or_group);
     for (var path of paths) {
@@ -42,7 +42,7 @@ const SplitOptions = {
  * flag is enabled, this will dump to loaded_commands.json and will be
  * reused on startup. Note this will be overwritten when compiling. 
  */
-async function func(bot: commands.Bot, ctx: commands.Context, args: Set<string>, func: Function): Promise<string[]> {
+async function func(bot: commands.Client, ctx: commands.Context, args: Set<string>, func: Function): Promise<string[]> {
     let resp: string = "```\n";
     // Run the loading function for each argument and append response with result.
     for (var arg of args) {
@@ -76,24 +76,24 @@ async function func(bot: commands.Bot, ctx: commands.Context, args: Set<string>,
 
 
 module.exports = {cmds: [{
-    name: "load", aliases: ["l"], func: async (bot: commands.Bot, ctx: commands.Context) => {
+    name: "load", aliases: ["l"], func: async (bot: commands.Client, ctx: commands.Context) => {
         // Split arguments by commas & spaces, load them, and return the responses.
         const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
         let resps = await func(bot, ctx, args, Load);
         for (var resp of resps) await ctx.send(resp);
-    }, check: async (bot: commands.Bot, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
+    }, check: async (bot: commands.Client, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
 }, {
-    name: "unload", aliases: ["u"], func: async (bot: commands.Bot, ctx: commands.Context) => {
+    name: "unload", aliases: ["u"], func: async (bot: commands.Client, ctx: commands.Context) => {
         // Split arguments by commas & spaces, unload them, and return the responses.
         const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
         let resps = await func(bot, ctx, args, Unload);
         for (var resp of resps) await ctx.send(resp);
-    }, check: async (bot: commands.Bot, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
+    }, check: async (bot: commands.Client, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
 }, {
-    name: "reload", aliases: ["r"], func: async (bot: commands.Bot, ctx: commands.Context) => {
+    name: "reload", aliases: ["r"], func: async (bot: commands.Client, ctx: commands.Context) => {
         // Split arguments by commas & spaces, reload them, and return the responses.
         const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
         let resps = await func(bot, ctx, args, Reload);
         for (var resp of resps) await ctx.send(resp);
-    }, check: async (bot: commands.Bot, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
+    }, check: async (bot: commands.Client, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
 }]}

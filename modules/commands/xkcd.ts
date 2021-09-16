@@ -1,4 +1,4 @@
-import { Bot, Context } from "../commands";
+import { Client, Context } from "../commands";
 import axios, { AxiosResponse } from "axios";
 
 
@@ -14,7 +14,7 @@ async function get_xkcd(index: number): Promise<XKCDResp> {
 module.exports = {
     cmds: [{
         name: "xkcd", aliases: ["XKCD"],
-        func: async (bot: Bot, ctx: Context) => {
+        func: async (bot: Client, ctx: Context) => {
             const number = Number(ctx.args.shift())
             const resp = await get_xkcd(number ? number : 221);
             const embed = { title: resp.title, footer: { text: resp.alt }, color: ctx.self.displayColor, url: resp.url };

@@ -2,12 +2,12 @@ import { Message } from "discord.js";
 import * as loaded_commands from "./commands/loaded_commands.json"
 import { BadCommandError, CheckFailure } from "./errors";
 import { Command, Commands, context_from_message, file_to_command_group } from "./commands";
-import { Bot } from "./commands";
+import { Client } from "./commands";
 
 /**
  * Loads commands and sets them as a property of bot.
  */
-export function initialize(bot: Bot): void {
+export function initialize(bot: Client): void {
     let commands: Command[] = [];
     for (var fp of loaded_commands) {
         let cmds = file_to_command_group(fp);
@@ -25,7 +25,7 @@ export function initialize(bot: Bot): void {
  * @param message A Discord message.
  * @returns void
  */
-export async function parse_command(bot: Bot, prefix: string, message: Message): Promise<void> {
+export async function parse_command(bot: Client, prefix: string, message: Message): Promise<void> {
     if (!message.content.startsWith(prefix)) return;
     const ctx = context_from_message(prefix, message);
 

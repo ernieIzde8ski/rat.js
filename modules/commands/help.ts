@@ -1,10 +1,10 @@
-import { Bot, Command, Commands, Context } from "../commands";
+import { Client, Command, Commands, Context } from "../commands";
 import { BadCommandError } from "../errors";
 
 
 /** Returns the full command list.
  * Use the --show_all flag to display all commands, regardless of ability to use.*/
-async function send_full_help(bot: Bot, ctx: Context): Promise<void> {
+async function send_full_help(bot: Client, ctx: Context): Promise<void> {
     let command_max_length = 0;
     let commands: Commands = bot.commands;
     if (!ctx.flags.show_all) {
@@ -71,7 +71,7 @@ module.exports = {
             name: "help",
             aliases: ["h", "commands", "cmds"],
             desc: "Shows support information",
-            func: async (bot: Bot, ctx: Context) => {
+            func: async (bot: Client, ctx: Context) => {
                 if (ctx.args.length === 0) {
                     await send_full_help(bot, ctx);
                 } else {
@@ -83,7 +83,7 @@ module.exports = {
             }
         }
     ],
-    "initialize": async (bot: Bot) => {
+    "initialize": async (bot: Client) => {
 
     }
 }

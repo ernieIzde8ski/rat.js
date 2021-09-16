@@ -1,5 +1,6 @@
-import { Client } from "@typeit/discord";
-import { APIMessageContentResolvable, ClientApplication, GuildMember, Message, MessageAdditions, MessageOptions, } from "discord.js";
+import * as discordTS from "@typeit/discord";
+import axios, { AxiosRequestConfig } from "axios";
+import * as discord from "discord.js";
 import { BadCommandError } from "./errors";
 const fuzz = require("fuzzball");
 
@@ -7,20 +8,25 @@ const fuzz = require("fuzzball");
 /** Format for configurations.json. */
 export type Configs = { prefix: string, trigger: string, git: string, invite: string, songs: Array<string> }
 /** Extension of Discord client. */
-export class Bot extends Client {
-    application?: ClientApplication;
+export class Client extends discordTS.Client {
+    application?: discord.ClientApplication;
 
-    constructor(public configs: Configs, public commands?: Commands) {
+    constructor(public configs: Configs, private secrets: any, public commands?: Commands) {
         super({ classes: [`${__dirname}/*Discord.ts`], silent: false, variablesChar: ":" })
     }
 
     /**
-     * Actually log in. Also initializes `application`.
+     * Logs in and initializes Bot.application.
      * @param token Discord bot application token.
      */
-    async start(token: string): Promise<void> {
-        await this.login(token)
+    async login(token?: string): Promise<string> {
+        token = await super.login(token ?? this.secrets.token);
         this.application = await this.fetchApplication();
+        return token;
+    }
+    async get(url: string, secrets: Array<string>, config?: AxiosRequestConfig) {
+        for (const secret of secrets) url = url.replace(secret.toUpperCase(), this.secrets[secret]);
+        return await axios.get(url, config);
     }
 }
 
@@ -36,7 +42,7 @@ type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Funct
 export type RawCommand = {
     name: string,
     aliases?: string[],
-    func: (bot: Bot, ctx: Context) => Promise<void | any>,
+    func: (bot: Client, ctx: Context) => Promise<void | any>,
     desc?: string,
     extdesc?: ExtendedDescription,
     check?: Function,
@@ -70,7 +76,7 @@ export class Command {
     names: Set<string>;
     desc: string;
     extdesc: string;
-    func: (bot: Bot, ctx: Context) => Promise<void | any>;
+    func: (bot: Client, ctx: Context) => Promise<void | any>;
     cmds: Commands;
     parents: string;
     check: Function
@@ -80,7 +86,7 @@ export class Command {
         this.names = new Set(raw_command.aliases ? raw_command.aliases : []).add(this.name);
         this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : "";
         this.extdesc = (typeof raw_command.extdesc === "object") ? Command.extdesc_constructor(raw_command.extdesc) : "";
-        this.check = (raw_command.check === undefined) ? async (a: Bot, b: Context) => true : raw_command.check;
+        this.check = (raw_command.check === undefined) ? async (a: Client, b: Context) => true : raw_command.check;
         this.func = raw_command.func;
         this.parents = parents.join(" ");
 
@@ -158,15 +164,15 @@ export class Commands extends Array<Command> {
 
 /** Context passed to all invocations of Command. */
 export class Context {
-    self?: GuildMember
+    self?: discord.GuildMember
     constructor(
-        public invoked_with: string, public message: Message, public command: string, public args: string[], public flags: any
+        public invoked_with: string, public message: discord.Message, public command: string, public args: string[], public flags: any
     ) {
         this.self = this.message.guild?.me;
     }
 
     /** Shorthand for Context.message.channel.send. */
-    async send(content: APIMessageContentResolvable | (MessageOptions & { split?: false; }) | MessageAdditions): Promise<Message> {
+    async send(content: discord.APIMessageContentResolvable | (discord.MessageOptions & { split?: false; }) | discord.MessageAdditions): Promise<discord.Message> {
         return await this.message.channel.send(content)
     }
 
@@ -183,7 +189,7 @@ export class Context {
 }
 
 /** Generates the Context for a Message. */
-export function context_from_message(prefix: string, message: Message): Context {
+export function context_from_message(prefix: string, message: discord.Message): Context {
     // Split arguments at first instance of --, create command & args variables.
     let [__args__, ...__flags__] = message.content.slice(prefix.length).split(/\s*--/);
     let args = __args__.split(" ");

@@ -1,4 +1,4 @@
-import { Bot, Context } from "../commands";
+import { Client, Context } from "../commands";
 const seedrandom = require("seedrandom");
 
 
@@ -22,18 +22,18 @@ module.exports = {
     cmds: [{
         name: "random_choice", aliases: ["random", "pick"],
         desc: "Return a random selection from an array",
-        func: async (bot: Bot, ctx: Context) => {
+        func: async (bot: Client, ctx: Context) => {
             const args = ctx.args.join(" ").split(/,\s*/gm);
             await ctx.send(random_choice(args));
         }
     }, {
         name: "random_song", aliases: ["rs", "song"],
         desc: "Return a random song",
-        func: async (bot: Bot, ctx: Context) => await ctx.send(`https://youtu.be/${random_song(bot.configs.songs)}`)
+        func: async (bot: Client, ctx: Context) => await ctx.send(`https://youtu.be/${random_song(bot.configs.songs)}`)
     }, {
         name: "based_meter", aliases: ["bm"],
         desc: "Determine basedness",
-        func: async (bot: Bot, ctx: Context) => {
+        func: async (bot: Client, ctx: Context) => {
             let args = ctx.args.join(' ');
             if (!args.length) args = "Your";
             const rng = seedrandom(args);
@@ -43,7 +43,7 @@ module.exports = {
         }
     }, {
         name: "gobi_meter", aliases: ["gm"],
-        func: async (bot: Bot, ctx: Context) => {
+        func: async (bot: Client, ctx: Context) => {
             const args = ctx.args.length ? ctx.args.join(" ") : "Your";
             const seed = seedrandom(args);
             await ctx.send(`**${args}** are **${random_percent(seed)}** percent **Gobi**.`);
