@@ -1,5 +1,5 @@
 import { Client, Context } from "../commands";
-import { ArgumentParsingError } from "../errors";
+
 
 /** TODO: Local time command */
 module.exports = {
@@ -13,8 +13,6 @@ module.exports = {
         }
     }, {
         name: "NSBM", aliases: ["nsbm"],
-        func: async (bot: Client, ctx: Context) => {
-            await ctx.send("https://cdn.discordapp.com/attachments/404758309418172436/876620413701062727/ymq2us28roi61.png");
-        }
+        func: async (bot: Client, ctx: Context) => await ctx.send("https://cdn.discordapp.com/attachments/404758309418172436/876620413701062727/ymq2us28roi61.png")
     }]
 }

@@ -10,7 +10,7 @@ import { Client } from "./commands";
 export function initialize(bot: Client): void {
     let commands: Command[] = [];
     for (var fp of loaded_commands) {
-        let cmds = file_to_command_group(fp);
+        const cmds = file_to_command_group(fp);
         commands = commands.concat(...cmds)
     }
     bot.commands = new Commands(...commands)

@@ -20,8 +20,8 @@ module.exports = {
         }
     }, {
         name: "invite", aliases: ["inv"], desc: "Return the bot & server invites",
-        func: async (bot: Client, ctx: Context) => {
-            await ctx.send(`Server Invite: https://discord.gg/${bot.configs.invite}\nBot Invite: https://discord.com/oauth2/authorize?client_id=${bot.user.id}&scope=bot&permissions=2214915137`);
-        }
+        func: async (bot: Client, ctx: Context) =>
+            await ctx.send(`Server Invite: https://discord.gg/${bot.configs.invite}\nBot Invite: https://discord.com/oauth2/authorize?client_id=${bot.user.id}&scope=bot&permissions=2214915137`)
+
     }]
 }

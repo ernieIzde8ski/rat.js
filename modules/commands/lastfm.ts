@@ -4,8 +4,8 @@ import { ArgumentParsingError } from "../errors";
 import { LastFMRecentResponses } from "./lastfm-typings";
 
 
-
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
 module.exports = {
     cmds: [{
         name: "now_playing", aliases: ["fm", "np"],

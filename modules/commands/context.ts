@@ -5,7 +5,7 @@ module.exports = {
         name: "context", aliases: ["ctx"],
         desc: "Display part of the Context class on a message",
         func: async (bot: Client, ctx: Context) => {
-            let ctx_string = ctx.toString();
+            const ctx_string = ctx.toString();
             await ctx.send("Context: \n```CONTEXT\n```".replace("CONTEXT", ctx_string));
         },
         cmds: [{

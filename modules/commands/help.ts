@@ -10,22 +10,21 @@ async function send_full_help(bot: Client, ctx: Context): Promise<void> {
     if (!ctx.flags.show_all) {
         commands = new Commands(...await commands.asyncFilter(async command => await command.check(bot, ctx)));
     }
-    for (var command of commands) {
-        if (command.name.length > command_max_length)
-            command_max_length = command.name.length;
+    for (const command of commands) {
+        if (command.name.length > command_max_length) command_max_length = command.name.length;
     }
     command_max_length += 4;
 
     let current_group = undefined;
     let resp = "```\n";
-    for (var command of commands) {
+    for (const command of commands) {
         if (command.group !== current_group) {
             current_group = command.group;
             resp += (current_group + ":\n");
         }
         resp += ("   " + command.name);
         if (command.desc !== "") {
-            var spaces = " ".repeat(command_max_length - command.name.length);
+            const spaces = " ".repeat(command_max_length - command.name.length);
             resp += (spaces + command.desc);
         };
         resp += "\n";
@@ -49,14 +48,14 @@ async function send_command_help(ctx: Context, command: Command): Promise<void> 
     if (command.extdesc) resp += `\n${command.extdesc}\n`;
 
     if (command.cmds.length) {
-        let max_spaces: number = 0;
-        let cmds = command.cmds.map(cmd => [cmd.name, cmd.desc]);
+        let max_spaces = 0;
+        const cmds = command.cmds.map(cmd => [cmd.name, cmd.desc]);
         for (var cmd of cmds) {
             if (cmd[0].length > max_spaces) max_spaces = cmd[0].length;
         } max_spaces += 4;
 
         resp += "\nCommands:\n";
-        for (var cmd of cmds) {
+        for (const cmd of cmds) {
             resp += ("  " + cmd[0] + " ".repeat(max_spaces - cmd[0].length) + cmd[1] + "\n");
         }
         resp += "\n";
@@ -76,7 +75,7 @@ module.exports = {
                     await send_full_help(bot, ctx);
                 } else {
                     ctx.command = ctx.args.shift();
-                    let command = bot.commands.get(ctx);
+                    const command = bot.commands.get(ctx);
                     if (command === null) throw new BadCommandError()
                     await send_command_help(ctx, command);
                 }

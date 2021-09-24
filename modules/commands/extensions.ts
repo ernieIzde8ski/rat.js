@@ -22,7 +22,7 @@ function Unload(bot: commands.Client, fp_or_group: string): void {
 }
 /** Reloads an extension by filepath or group name. May throw errors. */
 function Reload(bot: commands.Client, fp_or_group: string): void {
-    let paths = new Set(bot.commands.filter(cmd => [cmd.group, cmd.fp].includes(fp_or_group)).map(cmd => cmd.fp));
+    const paths = new Set(bot.commands.filter(cmd => [cmd.group, cmd.fp].includes(fp_or_group)).map(cmd => cmd.fp));
     if (!paths.size) throw new errors.ExtensionNotLoaded(fp_or_group);
     for (var path of paths) {
         Unload(bot, path);
@@ -45,7 +45,7 @@ const SplitOptions = {
 async function func(bot: commands.Client, ctx: commands.Context, args: Set<string>, func: Function): Promise<string[]> {
     let resp: string = "```\n";
     // Run the loading function for each argument and append response with result.
-    for (var arg of args) {
+    for (const arg of args) {
         try {
             func(bot, arg);
             resp += `${func.name}ed ${arg}.\n`
@@ -59,7 +59,7 @@ async function func(bot: commands.Client, ctx: commands.Context, args: Set<strin
     }
     // Save the filepaths.
     if (ctx.flags.save == true) {
-        let set = [...new Set(bot.commands.map(command => command.fp))];
+        const set = [...new Set(bot.commands.map(command => command.fp))];
         try {
             await fs.writeFile("./build/modules/commands/loaded_commands.json", JSON.stringify([...set]));
             resp += `Saved the following filepaths to loaded_commands.json: ${set.join(", ")}\n`;
@@ -79,21 +79,21 @@ module.exports = {cmds: [{
     name: "load", aliases: ["l"], func: async (bot: commands.Client, ctx: commands.Context) => {
         // Split arguments by commas & spaces, load them, and return the responses.
         const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
-        let resps = await func(bot, ctx, args, Load);
+        const resps = await func(bot, ctx, args, Load);
         for (var resp of resps) await ctx.send(resp);
     }, check: async (bot: commands.Client, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
 }, {
     name: "unload", aliases: ["u"], func: async (bot: commands.Client, ctx: commands.Context) => {
         // Split arguments by commas & spaces, unload them, and return the responses.
         const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
-        let resps = await func(bot, ctx, args, Unload);
+        const resps = await func(bot, ctx, args, Unload);
         for (var resp of resps) await ctx.send(resp);
     }, check: async (bot: commands.Client, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
 }, {
     name: "reload", aliases: ["r"], func: async (bot: commands.Client, ctx: commands.Context) => {
         // Split arguments by commas & spaces, reload them, and return the responses.
         const args = new Set(ctx.args.join(" ").split(/,\s*|\s+/gm));
-        let resps = await func(bot, ctx, args, Reload);
+        const resps = await func(bot, ctx, args, Reload);
         for (var resp of resps) await ctx.send(resp);
     }, check: async (bot: commands.Client, ctx: commands.Context): Promise<boolean> => ctx.message.author.id == bot.application.owner.id
 }]}

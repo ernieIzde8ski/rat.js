@@ -18,9 +18,8 @@ async function get_text(ref: string, translation: string = "kjv", characters_per
     if (typeof data === "string") throw new TranslationNotFound(translation);
     else if ("error" in data) throw new Error(data.error);
 
-    let text = "";
-    if (!display_verse) text = data.text.trim().replace(/\s+/g, " ");
-    else text = data.verses.map(verse => `${verse.verse} ` + verse.text.trim().replace(/\s+/g, " ")).join(" ");
+    if (!display_verse) var text = data.text.trim().replace(/\s+/g, " ");
+    else var text = data.verses.map(verse => `${verse.verse} ` + verse.text.trim().replace(/\s+/g, " ")).join(" ");
 
     return { ref: data.reference, text: twitterSplitter(text, characters_per_line, "").join("\n"), translation }
 }

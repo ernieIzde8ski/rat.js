@@ -1,31 +1,23 @@
 import { Client, Context } from "../commands";
-const seedrandom = require("seedrandom");
+import { choice, rand_int } from "../random";
+const sr = require("seedrandom");
 
 
-function random_choice(arr: Array<any>, rng: Function = Math.random): any {
-    if (!arr.length) throw new Error();
-    return arr[Math.floor(arr.length * rng())];
-}
 function random_song(arr: Array<string>): string {
-    if (!arr?.length) return "7-iRf9AWoyE";
-    return arr[Math.floor(arr.length * Math.random())];
-}
-function random_int(start: number, stop: number, rng: Function = Math.random): number {
-    return Math.floor(stop * rng() + start);
+    if (!arr.length) return "7-iRf9AWoyE";
+    return choice(arr);
 }
 function random_percent(rng: Function = Math.random, precision: number = 2): number {
-    return Math.round(rng() * (10 ** (precision + 2))) / 10 ** (precision)
+    return Math.round(rng() * (10 ** (precision + 2))) / 10 ** (precision);
 }
 
 
 module.exports = {
     cmds: [{
-        name: "random_choice", aliases: ["random", "pick"],
+        name: "random_choice", aliases: ["random", "choice", "pick"],
         desc: "Return a random selection from an array",
-        func: async (bot: Client, ctx: Context) => {
-            const args = ctx.args.join(" ").split(/,\s*/gm);
-            await ctx.send(random_choice(args));
-        }
+        func: async (bot: Client, ctx: Context) => await ctx.send(choice(ctx.args.join(" ").split(/,\s*/gm)))
+
     }, {
         name: "random_song", aliases: ["rs", "song"],
         desc: "Return a random song",
@@ -36,8 +28,8 @@ module.exports = {
         func: async (bot: Client, ctx: Context) => {
             let args = ctx.args.join(' ');
             if (!args.length) args = "Your";
-            const rng = seedrandom(args);
-            const values = [random_choice(['based', 'cringe'], rng), random_choice(['!', '?', '.'], rng), random_int(1, 7, rng)];
+            const rng = sr(args);
+            const values = [choice(['based', 'cringe'], rng), choice(['!', '?', '.'], rng), rand_int(1, 7, rng)];
             const resp = `**${args.replace('*', "")}** are **${values[0]}${values[1].repeat(values[2])}**`;
             await ctx.send(resp);
         }
@@ -45,8 +37,7 @@ module.exports = {
         name: "gobi_meter", aliases: ["gm"],
         func: async (bot: Client, ctx: Context) => {
             const args = ctx.args.length ? ctx.args.join(" ") : "Your";
-            const seed = seedrandom(args);
-            await ctx.send(`**${args}** are **${random_percent(seed)}** percent **Gobi**.`);
+            await ctx.send(`**${args}** are **${random_percent(sr(args))}** percent **Gobi**.`);
         }
     }]
 }

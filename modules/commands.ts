@@ -36,7 +36,7 @@ function group_to_titlecase(group: string): string {
 }
 
 /** Format which command file exports follow. */
-type raw_command_group = { cmds: RawCommand[], name?: string, initialize?: Function };
+export type RawCommands = { cmds: RawCommand[], name?: string, initialize?: Function };
 
 /** Format which commands in command files follow. */
 export type RawCommand = {
@@ -60,7 +60,7 @@ export function file_to_command_group(path: string): Commands {
     const key = require.resolve(`./commands/${path}`);
     if (require.cache[key] !== undefined) delete require.cache[key];
     // Load the file.
-    const group: raw_command_group = require(`./commands/${path}`);
+    const group: RawCommands = require(`./commands/${path}`);
     if (group.name === undefined) group.name = group_to_titlecase(path);
     if (group.initialize !== undefined) group.initialize();
     // Convert each command to Command and append to resp.
@@ -160,6 +160,10 @@ export class Commands extends Array<Command> {
         // Return the subcommand if it exists.
         return subcmd ?? cmd;
     }
+
+    concat(cmds: Commands | Command[]): Commands {
+        return new Commands(...super.concat(cmds));
+    }
 }
 
 /** Context passed to all invocations of Command. */
@@ -197,12 +201,12 @@ export function context_from_message(prefix: string, message: discord.Message): 
     if (command === "") throw new BadCommandError();
 
     // Generate flag values.
-    let flags: any = {};
+    const flags: any = {};
     for (var i of __flags__) {
         // Splits up each flag into a key and value. This also kinda just eliminates extra whitespace,
         // I hope no one misses that.
-        let [key, ...values] = i.split(/\s+/);
-        let value = values.join(" ");
+        const [key, ...values] = i.split(/\s+/);
+        const value = values.join(" ");
 
         // Attempt to parse the value.
         if (value === "") flags[key] = true;
