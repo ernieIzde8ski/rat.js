@@ -21,7 +21,7 @@
     "axios": "^0.21.4",
     "discord.js": "^13.1.0",
     "fuzzball": "^2.0.2",
-    "seedrandom": "^3.0.5",
-    "twitter-splitter": "^1.0.0"
+    "not_enough_bibles": "^0.3.0",
+    "seedrandom": "^3.0.5"
   }
 }
