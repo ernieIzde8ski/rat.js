@@ -182,7 +182,6 @@ export class Context {
 
     /** Returns some basic information about the invocation context. */
     toString(): string {
-        console.log(this.args);
         return `Message ID: ${this.message.id}\nPrefix: ${this.invoked_with}\nCommand: ${this.command}\nArguments: ${JSON.stringify(this.args)}\nFlags: ${JSON.stringify(this.flags)}`;
     }
 

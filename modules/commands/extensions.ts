@@ -16,7 +16,6 @@ function Load(bot: commands.Client, fp: string): void {
 /** Unloads an extension by filepath or group name. May throw errors. */
 function Unload(bot: commands.Client, fp_or_group: string): void {
     const original_length = bot.commands.length;
-    console.log(bot.commands.filter(cmd => [cmd.group, cmd.fp].includes(fp_or_group)).map(cmd => cmd.name))
     bot.commands = new commands.Commands(...bot.commands.filter(cmd => ![cmd.group, cmd.fp].includes(fp_or_group)));
     if (bot.commands.length === original_length) throw new errors.ExtensionNotLoaded(fp_or_group);
 }
