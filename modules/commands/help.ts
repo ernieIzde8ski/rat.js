@@ -1,4 +1,4 @@
-import { Client, Command, Commands, Context } from "../commands";
+import { Client, Command, Commands, Context, CommandModule } from "../commands";
 import { BadCommandError } from "../errors";
 
 
@@ -64,13 +64,14 @@ async function send_command_help(ctx: Context, command: Command): Promise<void> 
     await ctx.send(resp + "\n```");
 }
 
-module.exports = {
+
+const Help: CommandModule = {
     "cmds": [
         {
             name: "help",
             aliases: ["h", "commands", "cmds"],
             desc: "Shows support information",
-            func: async (bot: Client, ctx: Context) => {
+            func: async (bot, ctx) => {
                 if (ctx.args.length === 0) {
                     await send_full_help(bot, ctx);
                 } else {
@@ -82,7 +83,10 @@ module.exports = {
             }
         }
     ],
-    "initialize": async (bot: Client) => {
+    "initialize": async bot => {
 
     }
 }
+
+
+module.exports = Help;

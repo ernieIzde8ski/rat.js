@@ -1,14 +1,16 @@
-import { Client, Context } from "../commands";
+import { CommandModule } from "../commands";
+
 
 function random_song(arr: Array<string>): string {
     if (!arr?.length) return "7-iRf9AWoyE";
     return arr[Math.floor(arr.length * Math.random())];
 }
 
-module.exports = {
+
+const Info: CommandModule = {
     cmds: [{
         name: "support", aliases: ["information", "info"], desc: "Provide support information",
-        func: async (bot: Client, ctx: Context) => {
+        func: async (bot, ctx) => {
             const embed = {
                 title: "Information & Support", color: ctx.self.displayColor,
                 description: `[GitHub](${bot.configs.git})\n`
@@ -20,8 +22,10 @@ module.exports = {
         }
     }, {
         name: "invite", aliases: ["inv"], desc: "Return the bot & server invites",
-        func: async (bot: Client, ctx: Context) =>
+        func: async (bot, ctx) =>
             await ctx.send(`Server Invite: https://discord.gg/${bot.configs.invite}\nBot Invite: https://discord.com/oauth2/authorize?client_id=${bot.user.id}&scope=bot&permissions=2214915137`)
 
     }]
 }
+
+module.exports = Info;

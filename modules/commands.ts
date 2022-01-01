@@ -4,7 +4,7 @@ import * as discord from "discord.js";
 import { BadCommandError } from "./errors";
 const fuzz = require("fuzzball");
 
-/** A command, as it appears in a file of the modules/commands directory. */
+/** A command, as it appears in a file of the /modules/commands directory. */
 export type ModuleCommand = {
     /** Name of the command. */
     name: string,
@@ -19,7 +19,8 @@ export type ModuleCommand = {
     cmds?: ModuleCommand[]
 }
 
-export type Module = {
+/** A file of the /modules/commands directory. */
+export type CommandModule = {
     name?: string,
     initialize?: (bot: Client) => Promise<any>,
     cmds: ModuleCommand[]
@@ -68,7 +69,7 @@ export function file_to_command_group(path: string): Commands {
     const key = require.resolve(`./commands/${path}`);
     if (require.cache[key] !== undefined) delete require.cache[key];
     // Load the file.
-    const group: Module = require(`./commands/${path}`);
+    const group: CommandModule = require(`./commands/${path}`);
     if (group.name === undefined) group.name = group_to_titlecase(path);
     // TODO: Figure out how to get the Client class into this initialize function.
     // if (group.initialize !== undefined) group.initialize();

@@ -1,16 +1,17 @@
 import { AxiosResponse } from "axios";
-import { Client, Context } from "../commands";
+import { CommandModule } from "../commands";
 import { ArgumentParsingError } from "../errors";
 import { LastFMRecentResponses } from "./lastfm-typings";
 
 
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-module.exports = {
+
+const LastFM: CommandModule = {
     cmds: [{
         name: "now_playing", aliases: ["fm", "np"],
         desc: "Gets the currently playing song of a user",
-        func: async (bot: Client, ctx: Context) => {
+        func: async (bot, ctx) => {
             if (!ctx.args.length) ctx.args.push("Armenium");
             const user = ctx.args.shift();
             if (!letters.includes(user[0]) || user.replace(/[A-z0-9_-]/g, "").length) throw new ArgumentParsingError(`Last.fm username '${user}' is invalid.`);
@@ -33,3 +34,6 @@ module.exports = {
         }
     }]
 }
+
+
+module.exports = LastFM;

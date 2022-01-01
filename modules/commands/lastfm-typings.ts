@@ -1,6 +1,9 @@
 type MBIDText = { mbid: string, "#text": string };
+
 type SizeText = { size: "small" | "medium" | "large" | "extralarge", "#text": string }
+
 type _Date = { uts: string, "#text": string }
+
 type LastFMRecentResponse = {
     recenttracks: {
         "@attr": {
@@ -23,4 +26,5 @@ type LastFMRecentResponse = {
         }>
     }
 };
+
 export type LastFMRecentResponses = LastFMRecentResponse | { error: number, message: string };

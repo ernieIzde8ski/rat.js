@@ -1,4 +1,4 @@
-import { Client, Context } from "../commands";
+import { CommandModule } from "../commands";
 import axios, { AxiosResponse } from "axios";
 
 
@@ -13,10 +13,10 @@ async function get_xkcd(index: number): Promise<XKCDResp> {
 }
 
 
-module.exports = {
+const XKCD: CommandModule = {
     cmds: [{
         name: "xkcd", aliases: ["XKCD"],
-        func: async (bot: Client, ctx: Context) => {
+        func: async (bot, ctx) => {
             const number = Number(ctx.args.shift())
             const resp = await get_xkcd(number ? number : 221);
             const embed = { title: resp.title, footer: { text: resp.alt }, color: ctx.self.displayColor, url: resp.url };
@@ -24,3 +24,6 @@ module.exports = {
         }
     }]
 }
+
+
+module.exports = XKCD;
