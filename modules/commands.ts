@@ -4,6 +4,26 @@ import * as discord from "discord.js";
 import { BadCommandError } from "./errors";
 const fuzz = require("fuzzball");
 
+/** A command, as it appears in a file of the modules/commands directory. */
+export type ModuleCommand = {
+    /** Name of the command. */
+    name: string,
+    /** Other names of the command. */
+    aliases?: string[],
+    /** First line of the command's description. */
+    desc?: string,
+    /** Secondary line(s) of the command's description. */
+    extdesc?: ExtendedDescription;
+    func: (bot: Client, ctx: Context) => Promise<any>,
+    check?: (bot: Client, ctx: Context) => Promise<boolean>
+    cmds?: ModuleCommand[]
+}
+
+export type Module = {
+    name?: string,
+    initialize?: (bot: Client) => Promise<any>,
+    cmds: ModuleCommand[]
+}
 
 /** Format for configurations.json. */
 export type Configs = { prefix: string, trigger: string, git: string, invite: string, songs: Array<string> }
@@ -35,19 +55,7 @@ function group_to_titlecase(group: string): string {
     return group.replace("_", " ").split(/\s+/).filter(str => str.length).map(str => str[0].toUpperCase() + str.slice(1).toLowerCase()).join(" ");
 }
 
-/** Format which command file exports follow. */
-export type RawCommands = { cmds: RawCommand[], name?: string, initialize?: Function };
 
-/** Format which commands in command files follow. */
-export type RawCommand = {
-    name: string,
-    aliases?: string[],
-    func: (bot: Client, ctx: Context) => Promise<void | any>,
-    desc?: string,
-    extdesc?: ExtendedDescription,
-    check?: Function,
-    cmds?: RawCommand[]
-};
 
 /** Recursive array of strings */
 type ExtendedDescription = Array<string | ExtendedDescription>;
@@ -60,9 +68,10 @@ export function file_to_command_group(path: string): Commands {
     const key = require.resolve(`./commands/${path}`);
     if (require.cache[key] !== undefined) delete require.cache[key];
     // Load the file.
-    const group: RawCommands = require(`./commands/${path}`);
+    const group: Module = require(`./commands/${path}`);
     if (group.name === undefined) group.name = group_to_titlecase(path);
-    if (group.initialize !== undefined) group.initialize();
+    // TODO: Figure out how to get the Client class into this initialize function.
+    // if (group.initialize !== undefined) group.initialize();
     // Convert each command to Command and append to resp.
     for (var raw_command of group.cmds) {
         resp.push(new Command(group.name, path, [], raw_command));
@@ -81,7 +90,7 @@ export class Command {
     parents: string;
     check: Function
 
-    constructor(public group: string, public fp: string, parents: string[], raw_command: RawCommand) {
+    constructor(public group: string, public fp: string, parents: string[], raw_command: ModuleCommand) {
         this.name = raw_command.name;
         this.names = new Set(raw_command.aliases ? raw_command.aliases : []).add(this.name);
         this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : "";
