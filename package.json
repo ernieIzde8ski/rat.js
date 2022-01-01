@@ -23,5 +23,8 @@
     "fuzzball": "^2.0.2",
     "not_enough_bibles": "^0.3.0",
     "seedrandom": "^3.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.4"
   }
 }
