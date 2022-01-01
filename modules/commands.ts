@@ -5,7 +5,7 @@ import { BadCommandError } from "./errors";
 const fuzz = require("fuzzball");
 
 /** A command, as it appears in a file of the /modules/commands directory. */
-export type ModuleCommand = {
+export type RawCommand = {
     /** Name of the command. */
     name: string,
     /** Other names of the command. */
@@ -16,14 +16,14 @@ export type ModuleCommand = {
     extdesc?: ExtendedDescription;
     func: (bot: Client, ctx: Context) => Promise<any>,
     check?: (bot: Client, ctx: Context) => Promise<boolean>
-    cmds?: ModuleCommand[]
+    cmds?: RawCommand[]
 }
 
 /** A file of the /modules/commands directory. */
 export type CommandModule = {
     name?: string,
     initialize?: (bot: Client) => Promise<any>,
-    cmds: ModuleCommand[]
+    cmds: RawCommand[]
 }
 
 /** Format for configurations.json. */
@@ -91,7 +91,7 @@ export class Command {
     parents: string;
     check: Function
 
-    constructor(public group: string, public fp: string, parents: string[], raw_command: ModuleCommand) {
+    constructor(public group: string, public fp: string, parents: string[], raw_command: RawCommand) {
         this.name = raw_command.name;
         this.names = new Set(raw_command.aliases ? raw_command.aliases : []).add(this.name);
         this.desc = (typeof raw_command.desc === "string") ? raw_command.desc : "";
